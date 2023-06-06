@@ -1,10 +1,10 @@
 class Cliente:
-    def __init__(self, idCliente, nombre, contacto, vehiculos, tickets, prioridad):
+    def __init__(self, idCliente, nombre, contacto, vehiculos=None, tickets=None, prioridad=None):
         self.__idCliente = idCliente
         self.__nombre = nombre
         self.__contacto = contacto
-        self.__vehiculos = vehiculos
-        self.__tickets = tickets
+        self.__vehiculos = [] if vehiculos is None else vehiculos
+        self.__tickets = [] if tickets is None else tickets
         self.__prioridad = prioridad
 
     # Getter para el atributo idCliente
