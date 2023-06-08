@@ -1,2 +1,0 @@
-admin1,contrasenia1,llave1,admin001
-admin2,contrasenia2,llave2,admin002
