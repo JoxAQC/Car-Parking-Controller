@@ -613,6 +613,144 @@ class Sistema {
 	    string fechaActual(buffer);
 	    return fechaActual;
 	}
+
+	void agregarTicket(const string& placa, const Ticket& ticket) {
+    ifstream archivo("clientes.txt");
+    if (!archivo.is_open()) {
+        cout << "No se pudo abrir el archivo clientes.txt.\n";
+        return;
+    }
+    ofstream archivoTemporal("clientes_temp.txt"); // Archivo temporal para escribir los cambios
+    if (!archivoTemporal.is_open()) {
+        cout << "No se pudo abrir el archivo temporal para escribir los cambios.\n";
+        archivo.close();
+        return;
+    }
+
+    string linea;
+    string clienteActual;
+    bool encontrado = false;
+    bool enCliente = false;
+    bool enTickets = false;
+
+    while (getline(archivo, linea)) {
+        if (linea.find("Id de cliente: ") != string::npos) {
+            // Si ya se encontró al cliente anteriormente, se guarda el ticket en el archivo temporal
+            if (enCliente) {
+                archivoTemporal << "Id de ticket: " << ticket.getIdTicket() << endl;
+                archivoTemporal << "Hora de ingreso: " << ticket.getHoraIngreso() << endl;
+                archivoTemporal << "Hora de salida: " << ticket.getHoraSalida() << endl;
+                archivoTemporal << "Fecha: " << ticket.getFecha() << endl;
+                archivoTemporal << "Vehiculos del ticket: " << endl;
+                const vector<Vehiculo>& vehiculosTicket = ticket.getVehiculos();
+                for (const auto& vehiculo : vehiculosTicket) {
+                    archivoTemporal << "Id de vehiculo: " << vehiculo.getIdVehiculo() << endl;
+                    archivoTemporal << "Placa: " << vehiculo.getPlaca() << endl;
+                    archivoTemporal << "Ubicacion: " << vehiculo.getUbicacion() << endl;
+                }
+                archivoTemporal << "Monto: " << ticket.getMonto() << endl;
+                archivoTemporal << "Horas totales: " << ticket.getHorasTotales() << endl;
+                archivoTemporal << endl;
+            }
+
+            clienteActual = linea; // Guardar el encabezado del cliente actual
+            enCliente = true;
+            enTickets = false;
+            encontrado = false;
+        }
+
+        if (linea.find("Placa: " + placa) != string::npos) {
+            encontrado = true;
+        }
+
+        if (linea.find("Tickets: ") != string::npos) {
+            enTickets = true;
+        }
+
+        // Escribir las líneas del cliente actual en el archivo temporal
+        archivoTemporal << linea << endl;
+    }
+
+    // Si se llega al final del archivo y se encontró al cliente anteriormente, se agrega el ticket al final del cliente
+    if (enCliente && enTickets && encontrado) {
+        archivoTemporal << "Id de ticket: " << ticket.getIdTicket() << endl;
+        archivoTemporal << "Hora de ingreso: " << ticket.getHoraIngreso() << endl;
+        archivoTemporal << "Hora de salida: " << ticket.getHoraSalida() << endl;
+        archivoTemporal << "Fecha: " << ticket.getFecha() << endl;
+        archivoTemporal << "Vehiculos del ticket: " << endl;
+        const vector<Vehiculo>& vehiculosTicket = ticket.getVehiculos();
+        for (const auto& vehiculo : vehiculosTicket) {
+            archivoTemporal << "Id de vehiculo: " << vehiculo.getIdVehiculo() << endl;
+            archivoTemporal << "Placa: " << vehiculo.getPlaca() << endl;
+			archivoTemporal << "Ubicacion: " << vehiculo.getUbicacion() << endl;
+        }
+        archivoTemporal << "Monto: " << ticket.getMonto() << endl;
+        archivoTemporal << "Horas totales: " << ticket.getHorasTotales() << endl;
+        archivoTemporal << endl;
+    }
+
+   // Cerrar los archivos
+	archivoTemporal.close();
+	archivo.close();
+
+	// Eliminar el archivo original
+	if (remove("clientes.txt") != 0) {
+		cout << "No se pudo eliminar el archivo original.\n";
+		return;
+	}
+
+	// Renombrar el archivo temporal como el archivo original
+	if (rename("clientes_temp.txt", "clientes.txt") != 0) {
+		cout << "No se pudo renombrar el archivo temporal.\n";
+		return;
+	}
+
+	cout << "Se agrego el ticket correctamente.\n";
+}
+
+
+	Vehiculo obtenerVehiculoPorPlaca(const string& placa) {
+    ifstream archivo("clientes.txt");
+    if (!archivo.is_open()) {
+        throw runtime_error("No se pudo abrir el archivo clientes.txt");
+    }
+    string linea;
+    while (getline(archivo, linea)) {
+        if (linea.find("Placa: " + placa) != string::npos) {
+            // Se encontró la línea que contiene la placa del vehículo
+            // Se extraen los datos necesarios para crear el objeto Vehiculo
+            int idVehiculo = -1; // Valor predeterminado para el caso de error
+            int ubicacion = -1; // Valor predeterminado para el caso de error
+            while (getline(archivo, linea)) {
+                if (linea.find("Id de vehiculo: ") != string::npos) {
+                    idVehiculo = stoi(linea.substr(linea.find(":") + 1));
+                } else if (linea.find("Ubicacion: ") != string::npos) {
+                    ubicacion = stoi(linea.substr(linea.find(":") + 1));
+                } else if (linea.empty()) {
+                    // Se ha llegado al final de los datos del vehículo
+                    break;
+                }
+            }
+
+            // Cerrar el archivo
+            archivo.close();
+
+            // Verificar si se obtuvieron los datos del vehículo correctamente
+            if (idVehiculo == -1 || ubicacion == -1) {
+                throw runtime_error("Error al obtener los datos del vehículo");
+            }
+
+            // Crear y retornar el objeto Vehiculo
+            return Vehiculo(idVehiculo, placa, ubicacion);
+        }
+    }
+
+    // Si se llega a este punto, significa que no se encontró el vehículo con la placa especificada
+    archivo.close();
+    throw runtime_error("No se encontró un vehículo con la placa especificada");
+}
+
+
 };
 
 
@@ -620,6 +758,7 @@ int main() {
 	Sistema sistema;
 	string usuario, contrasenia;
 	int llaveMaestra,idAdministrador;
+	/*
 	cout << "Iniciar sesion\n";
     cout << "Usuario: ";
     cin >> usuario;
@@ -627,8 +766,9 @@ int main() {
     cin >> contrasenia;
     cout << "Llave Maestra: ";
     cin >> llaveMaestra;
+	*/
 	idAdministrador = 1;
-	Administrador admin1(usuario,contrasenia,llaveMaestra,idAdministrador);
+	Administrador admin1("Rose","rose1",1,1);
     bool encontrado = sistema.buscarAdministrador(admin1);
     if (encontrado) {
         cout << "Bienvenido al ESTACIONAMIENTO MONO!"<<endl;
@@ -653,9 +793,23 @@ int main() {
     			cin >> placaBuscada;
     			clienteEncontrado = sistema.buscarClientePorPlaca(placaBuscada);
 				if (clienteEncontrado == true) {
-				    // No se registra el cliente 
-				    cout << "Cliente encontrado.\n";
-				    
+					// No se registra el cliente
+					cout << "Cliente encontrado.\n";
+
+					// Generar los datos necesarios para crear un nuevo ticket
+					int idTicket = sistema.generarIdAleatorio();
+					string horaIngreso = sistema.obtenerFechaHoraActual();
+					string horaSalida = "";
+					string fecha = sistema.obtenerFechaActual();
+					float monto = 0;
+					float horasTotales = 0;
+					// Obtener el objeto Vehiculo correspondiente a la placa buscada
+					Vehiculo vehiculo = sistema.obtenerVehiculoPorPlaca(placaBuscada);
+					vector<Vehiculo> vehiculosTicket;
+					vehiculosTicket.push_back(vehiculo);
+					Ticket ticketNuevo(idTicket, horaIngreso, horaSalida, fecha, vehiculosTicket, monto, horasTotales);
+					// Agregar el nuevo ticket al cliente correspondiente
+					sistema.agregarTicket(placaBuscada, ticketNuevo);
 				} else if (clienteEncontrado == false) {
 				    // Se debe registrar al cliente usando getters y setters
 					int idCliente = sistema.generarIdAleatorio();
@@ -685,7 +839,6 @@ int main() {
 					tickets.push_back(Ticket(idTicket, horaIngreso, horaSalida, fecha, vehiculos, monto, horasTotales));
 					// Crear el objeto Cliente utilizando los datos ingresados por el usuario
 					Cliente cliente(idCliente, nombre, vehiculos, tickets, prioridad);
-					cout <<"Hola";
 					sistema.registrarCliente(cliente);
 					sistema.verClientesRegistrados();
 				}

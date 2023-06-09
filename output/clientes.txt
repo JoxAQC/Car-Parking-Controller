@@ -1,46 +1,46 @@
 
-Id de cliente: 5205968
-Nombre: Jennie
+Id de cliente: 8811233
+Nombre: jennie
 Vehiculos: 
-Id de vehiculo: 7453330
-Placa: ABC123
-Ubicacion: 0
+Id de vehiculo: 1215045
+Placa: abc123
+Ubicacion: 4
 Tickets: 
-Id de ticket: 8182146
-Hora de ingreso: 2023-06-09 12:28:53
+Id de ticket: 7158444
+Hora de ingreso: 2023-06-09 13:59:37
 Hora de salida:  
 Fecha: 2023-06-09
 Vehiculos del ticket: 
+Id de vehiculo: 1215045
+Placa: abc123
+Ubicacion: 4
 Monto: 0
 Horas totales: 0
-Id de cliente: 1576713
-Nombre: Ruby
-Vehiculos: 
-Id de vehiculo: 9101053
-Placa: DEF456
-Ubicacion: 1
-Tickets: 
-Id de ticket: 6645150
-Hora de ingreso: 2023-06-09 12:29:19
-Hora de salida:  
+Id de ticket: 5910954
+Hora de ingreso: 2023-06-09 14:00:05
+Hora de salida: 
 Fecha: 2023-06-09
 Vehiculos del ticket: 
+Id de vehiculo: 7924624
+Placa: abc123
+Ubicacion: 5
 Monto: 0
 Horas totales: 0
-Id de cliente: 7139467
-Nombre: Sebastian
+
+Id de cliente: 1508539
+Nombre: lisa
 Vehiculos: 
-Id de vehiculo: 9363047
-Placa: BBCITA
-Ubicacion: 2
+Id de vehiculo: 7924624
+Placa: def456
+Ubicacion: 5
 Tickets: 
-Id de ticket: 3663740
-Hora de ingreso: 2023-06-09 12:46:11
+Id de ticket: 9204798
+Hora de ingreso: 2023-06-09 13:59:53
 Hora de salida:  
 Fecha: 2023-06-09
 Vehiculos del ticket: 
-Id de vehiculo: 9363047
-Placa: BBCITA
-Ubicacion: 2
+Id de vehiculo: 7924624
+Placa: def456
+Ubicacion: 5
 Monto: 0
 Horas totales: 0
