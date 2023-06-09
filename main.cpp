@@ -3,8 +3,12 @@
 #include <string>
 #include <sstream> 
 #include <vector>
+#include <random>
+#include <ctime>
+
 
 using namespace std;
+
 
 class Vehiculo{
 	
@@ -221,7 +225,7 @@ class Sistema {
 	        getline(cin, estado);
 	    }
 	    void crearEstacionamiento() {
-	    int matriz[100][100]; // Utilizar un tamaño máximo predefinido
+	    int matriz[100][100]; // Utilizar un tamaï¿½o mï¿½ximo predefinido
 	    int n;
 		cout << "Ingrese el tamanio del estacionamiento: ";
 	    cin >> n;
@@ -237,7 +241,7 @@ class Sistema {
 	            for (int j = 0; j < n; j++) {
 	                archivo << matriz[i][j] << " ";
 	            }
-	            archivo << endl; // Agregar salto de línea después de cada fila
+	            archivo << endl; // Agregar salto de lï¿½nea despuï¿½s de cada fila
 	        }
 	        archivo.close();
 	        cout << "Se ha creado el archivo estacionamiento.txt.\n";
@@ -250,17 +254,17 @@ class Sistema {
 		    ifstream archivo("estacionamiento.txt");
 		    if (archivo.is_open()) {
 		        string linea;
-		        const int MAX_SIZE = 100; // Tamaño máximo de la matriz
+		        const int MAX_SIZE = 100; // Tamaï¿½o mï¿½ximo de la matriz
 		        int matriz[MAX_SIZE][MAX_SIZE];
 		        int filas = 0;
 		
-		        // Leer la matriz del archivo línea por línea
+		        // Leer la matriz del archivo lï¿½nea por lï¿½nea
 		        while (getline(archivo, linea) && filas < MAX_SIZE) {
 		            istringstream iss(linea);
 		            int valor;
 		            int columnas = 0;
 		
-		            // Leer los valores separados por espacios en cada línea
+		            // Leer los valores separados por espacios en cada lï¿½nea
 		            while (iss >> valor && columnas < MAX_SIZE) {
 		                matriz[filas][columnas] = valor;
 		                columnas++;
@@ -287,15 +291,15 @@ class Sistema {
 		    ifstream archivo("estacionamiento.txt");
 		    if (archivo.is_open()) {
 		        string linea;
-		        const int MAX_SIZE = 100; // Tamaño máximo de la matriz
+		        const int MAX_SIZE = 100; // Tamaï¿½o mï¿½ximo de la matriz
 		        int matriz[MAX_SIZE][MAX_SIZE];
 		        int filas = 0;
-		        // Leer la matriz del archivo línea por línea
+		        // Leer la matriz del archivo lï¿½nea por lï¿½nea
 		        while (getline(archivo, linea) && filas < MAX_SIZE) {
 		            istringstream iss(linea);
 		            int valor;
 		            int columnas = 0;
-		            // Leer los valores separados por espacios en cada línea
+		            // Leer los valores separados por espacios en cada lï¿½nea
 		            while (iss >> valor && columnas < MAX_SIZE) {
 		                matriz[filas][columnas] = valor;
 		                columnas++;
@@ -303,7 +307,7 @@ class Sistema {
 		            filas++;
 		        }
 		        archivo.close();
-		        // Buscar la primera posición con valor 0 y actualizar a 1
+		        // Buscar la primera posiciï¿½n con valor 0 y actualizar a 1
 		        for (int i = 0; i < filas; i++) {
 		            for (int j = 0; j < filas; j++) {
 		                if (matriz[i][j] == 0) {
@@ -321,7 +325,7 @@ class Sistema {
 		                    } else {
 		                        cout << "No se pudo abrir el archivo para guardar el estacionamiento actualizado.\n";
 		                    }
-		                    return i * filas + j; // Calcular y retornar la posición en el arreglo
+		                    return i * filas + j; // Calcular y retornar la posiciï¿½n en el arreglo
 		                }
 		            }
 		        }
@@ -336,17 +340,17 @@ class Sistema {
 		    ifstream archivo("estacionamiento.txt");
 		    if (archivo.is_open()) {
 		        string linea;
-		        const int MAX_SIZE = 100; // Tamaño máximo de la matriz
+		        const int MAX_SIZE = 100; // Tamaï¿½o mï¿½ximo de la matriz
 		        int matriz[MAX_SIZE][MAX_SIZE];
 		        int filas = 0;
 		
-		        // Leer la matriz del archivo línea por línea
+		        // Leer la matriz del archivo lï¿½nea por lï¿½nea
 		        while (getline(archivo, linea) && filas < MAX_SIZE) {
 		            istringstream iss(linea);
 		            int valor;
 		            int columnas = 0;
 		
-		            // Leer los valores separados por espacios en cada línea
+		            // Leer los valores separados por espacios en cada lï¿½nea
 		            while (iss >> valor && columnas < MAX_SIZE) {
 		                matriz[filas][columnas] = valor;
 		                columnas++;
@@ -386,17 +390,17 @@ class Sistema {
 		    ifstream archivo("estacionamiento.txt");
 		    if (archivo.is_open()) {
 		        string linea;
-		        const int MAX_SIZE = 100; // Tamaño máximo de la matriz
+		        const int MAX_SIZE = 100; // Tamaï¿½o mï¿½ximo de la matriz
 		        int matriz[MAX_SIZE][MAX_SIZE];
 		        int filas = 0;
 		
-		        // Leer la matriz del archivo línea por línea
+		        // Leer la matriz del archivo lï¿½nea por lï¿½nea
 		        while (getline(archivo, linea) && filas < MAX_SIZE) {
 		            istringstream iss(linea);
 		            int valor;
 		            int columnas = 0;
 		
-		            // Leer los valores separados por espacios en cada línea
+		            // Leer los valores separados por espacios en cada lï¿½nea
 		            while (iss >> valor && columnas < MAX_SIZE) {
 		                matriz[filas][columnas] = valor;
 		                columnas++;
@@ -407,11 +411,11 @@ class Sistema {
 		
 		        archivo.close();
 		
-		        // Obtener la posición en el arreglo a partir de la posición recibida
+		        // Obtener la posiciï¿½n en el arreglo a partir de la posiciï¿½n recibida
 		        int fila = posicion / filas;
 		        int columna = posicion % filas;
 		
-		        // Establecer la posición como 0 en el arreglo
+		        // Establecer la posiciï¿½n como 0 en el arreglo
 		        matriz[fila][columna] = 0;
 		
 		        // Guardar la matriz actualizada en el archivo
@@ -437,12 +441,12 @@ class Sistema {
 		    if (archivo.is_open()) {
 		        // Escribir los datos de los administradores en el archivo
 		        archivo << "Usuario: Rose" << endl;
-		        archivo << "Contraseña: rose1" << endl;
+		        archivo << "Contrasenia: rose1" << endl;
 		        archivo << "LlaveMaestra: 1" << endl;
 		        archivo << "ID: 1" << endl;
 		        archivo << endl;
 		        archivo << "Usuario: Jennie" << endl;
-		        archivo << "Contraseña: jennie2" << endl;
+		        archivo << "Contrasenia: jennie2" << endl;
 		        archivo << "LlaveMaestra: 2" << endl;
 		        archivo << "ID: 2" << endl;
 		
@@ -453,114 +457,104 @@ class Sistema {
 		    }
 		} 
 		bool buscarAdministrador(const Administrador& admin) {
-	    ifstream archivo("administradores.txt");
-	    if (archivo.is_open()) {
-	        string linea;
-	        while (getline(archivo, linea)) {
-	            size_t separador = linea.find(":");
-	            if (separador != string::npos) {
-	                string clave = linea.substr(0, separador);
-	                string valor = linea.substr(separador + 2); // +2 para omitir ": "
-	
-	                if (clave == "Usuario" && valor == admin.getUsuario()) {
-	                    // Leer los atributos restantes del administrador
-	                    getline(archivo, linea); // Obtener la línea de Contraseña
-	                    separador = linea.find(":");
-	                    if (separador != string::npos) {
-	                        clave = linea.substr(0, separador);
-	                        valor = linea.substr(separador + 2); // +2 para omitir ": "
-	                        string contrasenia = valor;
-	
-	                        getline(archivo, linea); // Obtener la línea de LlaveMaestra
-	                        separador = linea.find(":");
-	                        if (separador != string::npos) {
-	                            clave = linea.substr(0, separador);
-	                            valor = linea.substr(separador + 2); // +2 para omitir ": "
-	                            int llaveMaestra = 0;
-	                            stringstream ss(valor);
-	                            ss >> llaveMaestra;
-	
-	                            if (admin.getContrasenia() == contrasenia && admin.getLlaveMaestra() == llaveMaestra) {
-	                                archivo.close();
-	                                return true;
-	                            }
-	                        }
-	                    }
-	                }
-	            }
-	        }
-	
-	        archivo.close();
-	    } else {
-	        cout << "No se pudo abrir el archivo administradores.txt.\n";
-	    }	
-	    return false;
-	}
+			ifstream archivo("administradores.txt");
+			if (archivo.is_open()) {
+				string linea;
+				while (getline(archivo, linea)) {
+					size_t separador = linea.find(":");
+					if (separador != string::npos) {
+						string clave = linea.substr(0, separador);
+						string valor = linea.substr(separador + 2); // +2 para omitir ": "
+		
+						if (clave == "Usuario" && valor == admin.getUsuario()) {
+							// Leer los atributos restantes del administrador
+							getline(archivo, linea); // Obtener la lï¿½nea de Contraseï¿½a
+							separador = linea.find(":");
+							if (separador != string::npos) {
+								clave = linea.substr(0, separador);
+								valor = linea.substr(separador + 2); // +2 para omitir ": "
+								string contrasenia = valor;
+		
+								getline(archivo, linea); // Obtener la lï¿½nea de LlaveMaestra
+								separador = linea.find(":");
+								if (separador != string::npos) {
+									clave = linea.substr(0, separador);
+									valor = linea.substr(separador + 2); // +2 para omitir ": "
+									int llaveMaestra = 0;
+									stringstream ss(valor);
+									ss >> llaveMaestra;
+		
+									if (admin.getContrasenia() == contrasenia && admin.getLlaveMaestra() == llaveMaestra) {
+										archivo.close();
+										return true;
+									}
+								}
+							}
+						}
+					}
+				}
+		
+				archivo.close();
+			} else {
+				cout << "No se pudo abrir el archivo administradores.txt.\n";
+			}	
+			return false;
+		}
 		void registrarCliente(const Cliente& cliente) {
-	        // Crear un nuevo nodo con el cliente
-	        NodoCliente* nuevoNodo = new NodoCliente(cliente);
-	
-	        // Verificar si la lista está vacía
-	        if (primerCliente == NULL) {
-	            primerCliente = nuevoNodo;
-	            ultimoCliente = nuevoNodo;
-	        } else {
-	            // Agregar el nuevo nodo al final de la lista
-	            nuevoNodo->anterior = ultimoCliente;
-	            ultimoCliente->siguiente = nuevoNodo;
-	            ultimoCliente = nuevoNodo;
-	        }
-	
-	        // Abrir el archivo en modo "append" para añadir el nuevo cliente
-	        ofstream archivo("clientes.txt", ios::app);
-	        if (archivo.is_open()) {
-	            // Guardar los datos del cliente en el archivo
-	            archivo << "Id de cliente: " << cliente.getIdCliente() << endl;
-	            archivo << "Nombre: " << cliente.getNombre() << endl;
-	
-	            // Guardar los vehículos del cliente
-	            const vector<Vehiculo>& vehiculos = cliente.getVehiculos();
-	            archivo << "Vehiculos: " << endl;
-	            for (size_t i = 0; i < vehiculos.size(); i++) {
-	                archivo << "Id de vehiculo: " << vehiculos[i].getIdVehiculo() << endl;
-	                archivo << "Placa: " << vehiculos[i].getPlaca() << endl;
-	                archivo << "Ubicacion: " << vehiculos[i].getUbicacion() << endl;
-	            }
-	
-	            // Guardar los tickets del cliente
-	            const vector<Ticket>& tickets = cliente.getTickets();
-	            archivo << "Tickets: " << endl;
-	            for (size_t i = 0; i < tickets.size(); i++) {
-	                archivo << "Id de ticket: " << tickets[i].getIdTicket() << endl;
-	                archivo << "Hora de ingreso: " << tickets[i].getHoraIngreso() << endl;
-	                archivo << "Hora de salida: " << tickets[i].getHoraSalida() << endl;
-	                archivo << "Fecha: " << tickets[i].getFecha() << endl;
-	                archivo << "Vehiculos del ticket: " << endl;
-	                const vector<Vehiculo>& vehiculosTicket = tickets[i].getVehiculos();
-	                for (size_t j = 0; j < vehiculosTicket.size(); j++) {
-	                    archivo << "Id de vehiculo: " << vehiculosTicket[j].getIdVehiculo() << endl;
-	                    archivo << "Placa: " << vehiculosTicket[j].getPlaca() << endl;
-	                    archivo << "Ubicacion: " << vehiculosTicket[j].getUbicacion() << endl;
-	                }
-	                archivo << "Monto: " << tickets[i].getMonto() << endl;
-	                archivo << "Horas totales: " << tickets[i].getHorasTotales() << endl;
-	            }
-	
-	            archivo.close();
-	            cout << "El cliente se ha registrado y se ha guardado en el archivo clientes.txt.\n";
-	        } else {
-	            cout << "No se pudo abrir el archivo para guardar el cliente.\n";
-	        }
-	    }
+			
+			cout <<"Antes de apertura archivo";
+			// Abrir el archivo en modo "append" para aÃ±adir el nuevo cliente
+			ofstream archivo("clientes.txt", ios::app);
+			if (archivo.is_open()) {
+				cout<<"Se abrio";
+				// Guardar los datos del cliente en el archivo
+				archivo << "Id de cliente: " << cliente.getIdCliente() << endl;
+				archivo << "Nombre: " << cliente.getNombre() << endl;
+
+				// Guardar los vehÃ­culos del cliente
+				const vector<Vehiculo>& vehiculos = cliente.getVehiculos();
+				archivo << "Vehiculos: " << endl;
+				for (size_t i = 0; i < vehiculos.size(); i++) {
+					archivo << "Id de vehiculo: " << vehiculos[i].getIdVehiculo() << endl;
+					archivo << "Placa: " << vehiculos[i].getPlaca() << endl;
+					archivo << "Ubicacion: " << vehiculos[i].getUbicacion() << endl;
+				}
+
+				// Guardar los tickets del cliente
+				const vector<Ticket>& tickets = cliente.getTickets();
+				archivo << "Tickets: " << endl;
+				for (size_t i = 0; i < tickets.size(); i++) {
+					archivo << "Id de ticket: " << tickets[i].getIdTicket() << endl;
+					archivo << "Hora de ingreso: " << tickets[i].getHoraIngreso() << endl;
+					archivo << "Hora de salida: " << tickets[i].getHoraSalida() << endl;
+					archivo << "Fecha: " << tickets[i].getFecha() << endl;
+					archivo << "Vehiculos del ticket: " << endl;
+					const vector<Vehiculo>& vehiculosTicket = tickets[i].getVehiculos();
+					for (size_t j = 0; j < vehiculosTicket.size(); j++) {
+						archivo << "Id de vehiculo: " << vehiculosTicket[j].getIdVehiculo() << endl;
+						archivo << "Placa: " << vehiculosTicket[j].getPlaca() << endl;
+						archivo << "Ubicacion: " << vehiculosTicket[j].getUbicacion() << endl;
+					}
+					archivo << "Monto: " << tickets[i].getMonto() << endl;
+					archivo << "Horas totales: " << tickets[i].getHorasTotales() << endl;
+				}
+				cout<<"------------------------------------------------";	
+				archivo.close();
+				cout << "El cliente se ha registrado y se ha guardado en el archivo clientes.txt.\n";
+			} else {
+				cout << "No se pudo abrir el archivo para guardar el cliente.\n";
+			}
+		}
+
 	    void verClientesRegistrados() {
 		    // Abrir el archivo en modo lectura
 		    ifstream archivo("clientes.txt");
 		    if (archivo.is_open()) {
 		        string linea;
 		
-		        // Leer el archivo línea por línea
+		        
 		        while (getline(archivo, linea)) {
-		            // Mostrar la línea por la salida estándar
+		            
 		            cout << linea << endl;
 		        }
 		
@@ -569,34 +563,158 @@ class Sistema {
 		        cout << "No se pudo abrir el archivo clientes.txt.\n";
 		    }
 		}
+		bool buscarClientePorPlaca(const string& placa) {
+		    std::ifstream archivo("clientes.txt");
+			if (!archivo.is_open()) {
+				throw runtime_error("No se pudo abrir el archivo clientes.txt");
+			}
+			string linea;
+			bool encontrado = false;
+			while (getline(archivo, linea)) {
+				if (linea.find("Placa: " + placa) != string::npos) {
+					encontrado = true;
+					break;
+				}
+			}
+
+			archivo.close();
+			return encontrado;
+		}
+		int generarIdAleatorio() {
+	    // Configurar el generador de nï¿½meros aleatorios
+	    random_device rd;
+	    mt19937 generator(rd());
+	    uniform_int_distribution<int> distribution(1000000, 9999999); // Rango de 7 dï¿½gitos enteros
+	    // Generar un nï¿½mero aleatorio de 7 dï¿½gitos
+	    int id = distribution(generator);
+	    return id;
+}
+		string obtenerFechaHoraActual() {
+	    // Obtener el tiempo actual
+	    time_t tiempoActual = time(NULL);
+	    // Convertir el tiempo a una estructura de tiempo local
+	    tm* tiempoLocal = localtime(&tiempoActual);
+	    // Obtener la fecha y hora actual en formato de cadena de caracteres
+	    char buffer[80];
+	    strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", tiempoLocal);
+	    // Convertir el buffer a una cadena de caracteres
+	    string fechaHoraActual(buffer);
+	    return fechaHoraActual;
+	}
+		string obtenerFechaActual() {
+	    // Obtener el tiempo actual
+	    time_t tiempoActual = time(NULL);
+	    // Convertir el tiempo a una estructura de tiempo local
+	    tm* tiempoLocal = localtime(&tiempoActual);
+	    // Obtener la fecha actual en formato de cadena de caracteres
+	    char buffer[11];
+	    strftime(buffer, sizeof(buffer), "%Y-%m-%d", tiempoLocal);
+	    // Convertir el buffer a una cadena de caracteres
+	    string fechaActual(buffer);
+	    return fechaActual;
+	}
 };
+
 
 int main() {
 	Sistema sistema;
-	Administrador admin1("Rose","rose1",1,1);
+	string usuario, contrasenia;
+	int llaveMaestra,idAdministrador;
+	cout << "Iniciar sesion\n";
+    cout << "Usuario: ";
+    cin >> usuario;
+    cout << "Contrasenia: ";
+    cin >> contrasenia;
+    cout << "Llave Maestra: ";
+    cin >> llaveMaestra;
+	idAdministrador = 1;
+	Administrador admin1(usuario,contrasenia,llaveMaestra,idAdministrador);
     bool encontrado = sistema.buscarAdministrador(admin1);
     if (encontrado) {
         cout << "Bienvenido al ESTACIONAMIENTO MONO!"<<endl;
-        
-		vector<Vehiculo> vehiculos;
-    	vehiculos.push_back(Vehiculo(1, "ABC123", 1));
-    	vehiculos.push_back(Vehiculo(2, "DEF456", 2));
-        
-		vector<Ticket> tickets;
-    	tickets.push_back(Ticket(1, "09:00", "18:00", "2023-06-01", vehiculos, 20.5, 9.0));
-    	
-    	Cliente cliente(1, "Juan", vehiculos, tickets, 1);
-    	
-    	//agregar mas vehiculos o tickets//
-    	cliente.agregarVehiculo(Vehiculo(3, "GHI789", 3));
-    	cliente.agregarTicket(Ticket(2, "10:00", "15:00", "2023-06-02", vehiculos, 15.0, 5.0));
-    	
-    	sistema.registrarCliente(cliente);
-    	system("PAUSE");
-    	
-    	sistema.verClientesRegistrados();
-    	
-    	
+    int opcion;
+    do {
+        cout << "----- Menu -----\n";
+        cout << "1. Ingresar Vehiculo\n";
+        cout << "2. Liberar Vehiculo\n";
+        cout << "3. Ver Estacionamiento Disponible\n";
+        cout << "4. Ver Reportes\n";
+        cout << "5. Crear Estacionamiento\n";
+        cout << "6. Limpiar Estacionamiento\n";
+        cout << "0. Salir\n";
+        cout << "Ingrese una opcion: ";
+        cin >> opcion;
+		string placaBuscada;
+		bool clienteEncontrado;
+		
+        switch (opcion) {
+            case 1:
+				cout << "Ingrese la placa del vehiculo: ";
+    			cin >> placaBuscada;
+    			clienteEncontrado = sistema.buscarClientePorPlaca(placaBuscada);
+				if (clienteEncontrado == true) {
+				    // No se registra el cliente 
+				    cout << "Cliente encontrado.\n";
+				    
+				} else if (clienteEncontrado == false) {
+				    // Se debe registrar al cliente usando getters y setters
+					int idCliente = sistema.generarIdAleatorio();
+					int prioridad;
+					string nombre;
+					vector<Vehiculo> vehiculos;
+					vector<Ticket> tickets;
+
+					// Solicitar al usuario los datos para definir el objeto Cliente
+					cout << "Ingrese el nombre del cliente: ";
+					cin >> nombre;
+					cout << "Ingrese la prioridad del cliente: ";
+					cin >> prioridad;
+					int idVehiculo, ubicacion;
+					idVehiculo = sistema.generarIdAleatorio();
+					ubicacion = sistema.designarUbicacion();
+					vehiculos.push_back(Vehiculo(idVehiculo, placaBuscada, ubicacion));
+					int idTicket = sistema.generarIdAleatorio();
+					string horaIngreso, horaSalida, fecha;
+					float monto, horasTotales;
+					
+					horaIngreso = sistema.obtenerFechaHoraActual();
+					horaSalida  = " ";
+					horasTotales = 0;
+					monto = 0;
+					fecha = sistema.obtenerFechaActual();
+					tickets.push_back(Ticket(idTicket, horaIngreso, horaSalida, fecha, vehiculos, monto, horasTotales));
+					// Crear el objeto Cliente utilizando los datos ingresados por el usuario
+					Cliente cliente(idCliente, nombre, vehiculos, tickets, prioridad);
+					cout <<"Hola";
+					sistema.registrarCliente(cliente);
+					sistema.verClientesRegistrados();
+				}
+                break;
+            case 2:
+                break;
+            case 3:
+            	sistema.verEstacionamiento();
+                break;
+            case 4:
+                break;
+            case 5:
+            	sistema.crearEstacionamiento();
+                break;
+            case 6:
+            	sistema.limpiarEstacionamiento();
+                break;
+            case 0:
+                cout << "Saliendo del programa...\n";
+                break;
+            default:
+                cout << "Opcion invalida. Por favor, seleccione una opcion valida.\n";
+                break;
+        }
+
+        cout << endl;
+
+    } while (opcion != 0);
+   	
     } else {
         cout << "Credenciales incorrectas.\n";
     }
