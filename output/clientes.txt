@@ -44,3 +44,37 @@ Placa: def456
 Ubicacion: 5
 Monto: 0
 Horas totales: 0
+Id de cliente: 6057644
+Nombre: Jose
+Vehiculos: 
+Id de vehiculo: 6057644
+Placa: 1245
+Ubicacion: 6
+Tickets: 
+Id de ticket: 6057644
+Hora de ingreso: 2023-06-14 13:07:37
+Hora de salida:  
+Fecha: 2023-06-14
+Vehiculos del ticket: 
+Id de vehiculo: 6057644
+Placa: 1245
+Ubicacion: 6
+Monto: 0
+Horas totales: 0
+Id de cliente: 6057644
+Nombre: Jose
+Vehiculos: 
+Id de vehiculo: 6057644
+Placa: 145
+Ubicacion: 0
+Tickets: 
+Id de ticket: 6057644
+Hora de ingreso: 2023-06-14 13:08:24
+Hora de salida:  
+Fecha: 2023-06-14
+Vehiculos del ticket: 
+Id de vehiculo: 6057644
+Placa: 145
+Ubicacion: 0
+Monto: 0
+Horas totales: 0
