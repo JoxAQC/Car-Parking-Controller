@@ -1,9 +1,0 @@
-Usuario: Rose
-Contrasenia: rose1
-LlaveMaestra: 1
-ID: 1
-
-Usuario: Jennie
-Contrasenia: jennie2
-LlaveMaestra: 2
-ID: 2
