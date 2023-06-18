@@ -13,6 +13,10 @@ nombreBD = "BDCarParking.db"
 class Sistema:
     def __init__(self, estado):
         self.__estado = estado
+        self.__tarifas = [2.50, 4.50, 6.50]
+
+    def get_tarifas(self):
+        return self.__tarifas
 
     # Setter para el atributo estado
     def set_estado(self, estado):
@@ -69,7 +73,46 @@ class Sistema:
         np.savetxt('estacionamiento.txt', estacionamiento, fmt='%d')
         
 
-    def liberarVehiculo(self):
+    from datetime import datetime
+
+    def liberarVehiculo(self, placa):
+        tickets = self.obtenerTicketsPorPlaca(placa)
+
+        if tickets:
+            ticket_mas_reciente = max(tickets, key=lambda ticket: ticket.get_horaIngreso())
+
+            for ticket in tickets:
+                if ticket == ticket_mas_reciente:
+                    # Actualizar horaSalida
+                    hora_salida = self.obtenerFechaHoraActual()
+                    ticket.set_horaSalida(hora_salida)
+
+                    # Calcular horasTotales
+                    hora_ingreso = ticket.get_horaIngreso()
+                    tiempo_ingreso = datetime.datetime.strptime(hora_ingreso, "%d/%m/%Y %H:%M:%S")
+
+                    # Obtener la fecha y hora actual
+                    tiempo_salida = datetime.datetime.now()
+
+                    # Calcular la diferencia de tiempo
+                    diferencia_tiempo = tiempo_salida - tiempo_ingreso
+
+                    # Calcular las horas totales
+                    horas_totales = diferencia_tiempo.total_seconds() // 3600
+                    ticket.set_horasTotales(horas_totales)
+
+                    # Actualizar monto
+                    monto_actualizado = ticket.get_monto() * horas_totales
+                    ticket.set_monto(monto_actualizado)
+
+                    # Actualizar el ticket en la base de datos
+                    conn = sql.connect(nombreBD)
+                    cursor = conn.cursor()
+                    query = "UPDATE Tickets SET horaSalida=?, horasTotales=?, monto=? WHERE idTicket=?"
+                    cursor.execute(query, (ticket.get_horaSalida(), ticket.get_horasTotales(), ticket.get_monto(), ticket.get_idTicket()))
+                    conn.commit()
+                    conn.close()
+
         pass
 
     def generarReporteDiario(self):
@@ -179,7 +222,31 @@ class Sistema:
             return vehiculo
         else:
             return None
-        
+
+    def obtenerTicketsPorPlaca(self, placa):
+        conn = sql.connect(nombreBD)
+        cursor = conn.cursor()
+        # Consulta para buscar tickets por placa
+        query = "SELECT * FROM Tickets WHERE placaVehiculo=?"
+        cursor.execute(query, (placa,))
+        resultados = cursor.fetchall()
+        conn.close()
+        tickets = []
+        if resultados:
+            for resultado in resultados:
+                idTicket = resultado[0]
+                horaIngreso = resultado[2]
+                horaSalida = resultado[3]
+                fecha = resultado[4]
+                ubicacion = resultado[6]
+                monto = resultado[7]
+                horasTotales = resultado[8]
+                vehiculo = self.obtenerVehiculoPlaca(placa)  # Obtener el vehículo asociado al ticket
+                ticket = Ticket(idTicket, horaIngreso, horaSalida, fecha, ubicacion, vehiculo, monto, horasTotales)
+                tickets.append(ticket)
+
+        return tickets  
+
     def obtenerClientePorNombre(self, nombreCliente):
         conn = sql.connect(nombreBD)
         cursor = conn.cursor()
@@ -250,6 +317,7 @@ class Sistema:
 def main():
     print("Iniciar Sesion")
     sistema = Sistema("Activo")
+    tarifas = sistema.get_tarifas() 
     #usuario = input("Usuario: ")
     #contrasenia = input("Contrasenia: ")
     #llaveMaestra = int(input("Llave Maestra: "))
@@ -282,6 +350,13 @@ def main():
                     ubicacion = int(sistema.asignarUbicacion())
                     print(ubicacion)
                     vehiculo = sistema.obtenerVehiculoPlaca(placaBuscada)
+                    tipo = vehiculo.get_tipo()
+                    if tipo == "moto":
+                        monto = tarifas[0]  # Obtener el valor de la posición 0 del vector de tarifas
+                    elif tipo == "auto":
+                        monto = tarifas[1]  # Obtener el valor de la posición 1 del vector de tarifas
+                    elif tipo == "camioneta":
+                        monto = tarifas[2]  # Obtener el valor de la posición 2 del vector de tarifas
                     nombreCliente = sistema.obtenerNombreClientePorPlaca(placaBuscada)
                     vehiculoTicket = [vehiculo]
                     cliente = sistema.obtenerClientePorNombre(nombreCliente)
@@ -299,7 +374,12 @@ def main():
                         horaIngreso = sistema.obtenerFechaHoraActual()
                         horaSalida = ""
                         fecha = sistema.obtenerFechaActual()
-                        monto = 0
+                        if tipo == "moto":
+                            monto = tarifas[0]  # Obtener el valor de la posición 0 del vector de tarifas
+                        elif tipo == "auto":
+                            monto = tarifas[1]  # Obtener el valor de la posición 1 del vector de tarifas
+                        elif tipo == "camioneta":
+                            monto = tarifas[2]  # Obtener el valor de la posición 2 del vector de tarifas
                         horasTotales = 0
                         ubicacion = int(sistema.asignarUbicacion())
                         ticketNuevo = Ticket(idTicket, horaIngreso, horaSalida, fecha, vehiculo,ubicacion, monto, horasTotales)
@@ -309,13 +389,18 @@ def main():
                         idCliente = sistema.generarIdAleatorio()
                         contacto = input("Ingrese contacto: ")
                         idVehiculo = sistema.generarIdAleatorio()
-                        tipo = input("Ingrese el tipo de vehiculo: ")
+                        tipo = input("Ingrese el tipo de vehiculo: ").lower()
+                        if tipo == "moto":
+                            monto = tarifas[0]  # Obtener el valor de la posición 0 del vector de tarifas
+                        elif tipo == "auto":
+                            monto = tarifas[1]  # Obtener el valor de la posición 1 del vector de tarifas
+                        elif tipo == "camioneta":
+                            monto = tarifas[2]  # Obtener el valor de la posición 2 del vector de tarifas
                         vehiculo = (Vehiculo(idVehiculo, placaBuscada, tipo))
                         idTicket = sistema.generarIdAleatorio()
                         horaIngreso = sistema.obtenerFechaHoraActual()
                         horaSalida = ""
                         fecha = sistema.obtenerFechaActual()
-                        monto = 0
                         horasTotales = 0
                         ubicacion = int(sistema.asignarUbicacion())
                         ticketNuevo = Ticket(idTicket, horaIngreso, horaSalida, fecha, vehiculo,ubicacion, monto, horasTotales)
@@ -325,6 +410,8 @@ def main():
                         sistema.generarTicket(cliente,vehiculo,ticketNuevo,ubicacion)
 
             elif opcion == 2:
+                placaBuscada = input("Ingrese la placa del vehiculo: ")
+                sistema.liberarVehiculo(placaBuscada)
                 pass
             elif opcion == 3:
                 sistema.verEstacionamiento()
