@@ -110,6 +110,9 @@ def limpiarTable(tabla):
     conn.commit()
     conn.close()
 
+#limpiarTable("Clientes")
+#limpiarTable("Tickets")
+#limpiarTable("Vehiculos")
 #createDB()
 #createTableClientes()
 #createTableTickets()
