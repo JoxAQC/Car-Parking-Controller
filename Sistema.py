@@ -103,6 +103,8 @@ class Sistema:
 
                     # Actualizar monto
                     monto_actualizado = ticket.get_monto() * horas_totales
+                    if monto_actualizado == 0:
+                        monto_actualizado=ticket.get_monto()
                     ticket.set_monto(monto_actualizado)
 
                     # Actualizar el ticket en la base de datos
@@ -112,6 +114,10 @@ class Sistema:
                     cursor.execute(query, (ticket.get_horaSalida(), ticket.get_horasTotales(), ticket.get_monto(), ticket.get_idTicket()))
                     conn.commit()
                     conn.close()
+
+                    # Obtener ubicacion del ticket6
+                    ubicacion_ticket = ticket.get_ubicacion()
+                    Sistema.liberarUbicacion(ubicacion_ticket)
 
         pass
 
@@ -242,7 +248,7 @@ class Sistema:
                 monto = resultado[7]
                 horasTotales = resultado[8]
                 vehiculo = self.obtenerVehiculoPlaca(placa)  # Obtener el vehículo asociado al ticket
-                ticket = Ticket(idTicket, horaIngreso, horaSalida, fecha, ubicacion, vehiculo, monto, horasTotales)
+                ticket = Ticket(idTicket, horaIngreso, horaSalida, fecha, vehiculo, ubicacion, monto, horasTotales)
                 tickets.append(ticket)
 
         return tickets  
