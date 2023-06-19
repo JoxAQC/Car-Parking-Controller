@@ -339,11 +339,12 @@ class Sistema:
         return None
 
 def main():
-    usuario = input()
-    contrasenia = input()
-    llaveMaestra = input()
-    user = Sistema.iniciarSesion(usuario, contrasenia, llaveMaestra)
-    print(user)
+    # usuario = input()
+    # contrasenia = input()
+    # llaveMaestra = input()
+    # user = Sistema.iniciarSesion(usuario, contrasenia, llaveMaestra)
+    # print(user)
+    print("Iniciar Sesion")
     sistema = Sistema("Activo")
     tarifas = sistema.get_tarifas() 
     #usuario = input("Usuario: ")
