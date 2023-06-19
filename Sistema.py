@@ -213,6 +213,24 @@ class Sistema:
     def imprimirClientes(self):
         pass
 
+    def iniciarSesion(usuario, contrasenia, llaveMaestra):
+        conn = sql.connect(nombreBD)
+        cursor = conn.cursor()
+        # Consulta para buscar administrador
+        try:
+            cursor.execute(
+                "SELECT * FROM Administradores WHERE usuario = ? AND contrasenia = ? AND llaveMaestra = ?",
+                (usuario, contrasenia, llaveMaestra),
+            )
+
+            user = cursor.fetchone()
+
+            return user
+        except sql.Error as e:
+            print("Error al buscar usuario:", str(e))
+
+        return None
+
     def obtenerVehiculoPlaca(self,placaBuscada):
         conn = sql.connect(nombreBD)
         cursor = conn.cursor()
@@ -321,7 +339,11 @@ class Sistema:
         return None
 
 def main():
-    print("Iniciar Sesion")
+    usuario = input()
+    contrasenia = input()
+    llaveMaestra = input()
+    user = Sistema.iniciarSesion(usuario, contrasenia, llaveMaestra)
+    print(user)
     sistema = Sistema("Activo")
     tarifas = sistema.get_tarifas() 
     #usuario = input("Usuario: ")
