@@ -4,7 +4,6 @@ from Reporte import Reporte
 from Ticket import Ticket
 from Vehiculo import Vehiculo
 import numpy as np
-import datetime
 import sqlite3 as sql
 import random
 import tkinter as tk
@@ -12,8 +11,8 @@ import calendar
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from collections import defaultdict
-import datetime
 from datetime import datetime
+import datetime
 
 nombreBD = "BDCarParking.db"
 
@@ -34,6 +33,7 @@ class Sistema:
         idAleatorio = int(random.randint(1000000, 9999999))
         return idAleatorio
     
+
     def obtenerFechaHoraActual(self):
         # Obtener la fecha y hora actual
         fecha_hora_actual = datetime.datetime.now()
