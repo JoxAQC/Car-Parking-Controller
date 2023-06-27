@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from collections import defaultdict
 from datetime import datetime
-import datetime
+from datetime import date
 
 nombreBD = "BDCarParking.db"
 
@@ -36,14 +36,14 @@ class Sistema:
 
     def obtenerFechaHoraActual(self):
         # Obtener la fecha y hora actual
-        fecha_hora_actual = datetime.datetime.now()
+        fecha_hora_actual = datetime.now()
         # Formatear la fecha y hora en formato de cadena (dd/mm/aaaa HH:MM:SS)
         fecha_hora_actual_str = fecha_hora_actual.strftime("%d/%m/%Y %H:%M:%S")
         return fecha_hora_actual_str
     
     def obtenerFechaActual(self):
         # Obtener la fecha actual
-        fecha_actual = datetime.date.today()
+        fecha_actual = date.today()
 
         # Formatear la fecha en formato de cadena (dd/mm/aaaa)
         fecha_actual_str = fecha_actual.strftime("%d/%m/%Y")
@@ -95,10 +95,10 @@ class Sistema:
 
                     # Calcular horasTotales
                     hora_ingreso = ticket.get_horaIngreso()
-                    tiempo_ingreso = datetime.datetime.strptime(hora_ingreso, "%d/%m/%Y %H:%M:%S")
+                    tiempo_ingreso = datetime.strptime(hora_ingreso, "%d/%m/%Y %H:%M:%S")
 
                     # Obtener la fecha y hora actual
-                    tiempo_salida = datetime.datetime.now()
+                    tiempo_salida = datetime.now()
 
                     # Calcular la diferencia de tiempo
                     diferencia_tiempo = tiempo_salida - tiempo_ingreso
