@@ -7,6 +7,13 @@ import numpy as np
 import datetime
 import sqlite3 as sql
 import random
+import tkinter as tk
+import calendar
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from collections import defaultdict
+import datetime
+from datetime import datetime
 
 nombreBD = "BDCarParking.db"
 
@@ -73,7 +80,6 @@ class Sistema:
         np.savetxt('estacionamiento.txt', estacionamiento, fmt='%d')
         
 
-    from datetime import datetime
 
     def liberarVehiculo(self, placa):
         tickets = self.obtenerTicketsPorPlaca(placa)
@@ -119,13 +125,169 @@ class Sistema:
                     ubicacion_ticket = ticket.get_ubicacion()
                     Sistema.liberarUbicacion(ubicacion_ticket)
 
+                    # Después de actualizar el ticket más reciente
+                    Sistema.imprimirTicket(ticket) 
         pass
 
-    def generarReporteDiario(self):
-        pass
+    def imprimirTicket(ticket):
+        ventana = tk.Tk()
+        ventana.title("Ticket de Salida")
+        
+        separador = "=" * 20
+        
+        etiqueta_titulo = tk.Label(ventana, text="ESTACIONAMIENTO MONO", font=("Arial", 12, "bold"))
+        etiqueta_titulo.pack()
+        
+        etiqueta_separador1 = tk.Label(ventana, text=separador)
+        etiqueta_separador1.pack()
+        
+        etiqueta_id = tk.Label(ventana, text=f"ID Ticket: {ticket.get_idTicket()}")
+        etiqueta_id.pack()
+        
+        etiqueta_hora_ingreso = tk.Label(ventana, text=f"Hora Ingreso: {ticket.get_horaIngreso()}")
+        etiqueta_hora_ingreso.pack()
+        
+        etiqueta_hora_salida = tk.Label(ventana, text=f"Hora Salida: {ticket.get_horaSalida()}")
+        etiqueta_hora_salida.pack()
+        
+        etiqueta_fecha = tk.Label(ventana, text=f"Fecha: {ticket.get_fecha()}")
+        etiqueta_fecha.pack()
+        
+        etiqueta_vehiculo = tk.Label(ventana, text=f"Vehículo: {ticket.get_vehiculo().get_placa()}")
+        etiqueta_vehiculo.pack()
+        
+        etiqueta_ubicacion = tk.Label(ventana, text=f"Ubicación: {ticket.get_ubicacion()}")
+        etiqueta_ubicacion.pack()
+        
+        etiqueta_separador2 = tk.Label(ventana, text=separador)
+        etiqueta_separador2.pack()
+        
+        etiqueta_monto = tk.Label(ventana, text=f"Monto a Pagar: S/ {ticket.get_monto()}")
+        etiqueta_monto.pack()
+        
+        etiqueta_horas_totales = tk.Label(ventana, text=f"Horas Totales: {ticket.get_horasTotales()}")
+        etiqueta_horas_totales.pack()
+        
+        etiqueta_separador3 = tk.Label(ventana, text=separador)
+        etiqueta_separador3.pack()
+        
+        etiqueta_gracias = tk.Label(ventana, text="¡Gracias por utilizar nuestro servicio!", font=("Arial", 12, "bold"))
+        etiqueta_gracias.pack()
+        
+        etiqueta_titulo_final = tk.Label(ventana, text="ESTACIONAMIENTO MONO", font=("Arial", 12, "bold"))
+        etiqueta_titulo_final.pack()
+        
+        etiqueta_separador4 = tk.Label(ventana, text=separador)
+        etiqueta_separador4.pack()
+        
+        ventana.mainloop()
 
-    def verReportes(self):
-        pass
+    def generarReporteIngresosMensuales():
+        # Conectar a la base de datos
+        conexion = sql.connect(nombreBD)
+        cursor = conexion.cursor()
+
+        # Obtener todos los datos de la tabla "Tickets"
+        cursor.execute("SELECT fecha, monto FROM Tickets")
+        datos_tickets = cursor.fetchall()
+
+        # Cerrar la conexión a la base de datos
+        conexion.close()
+
+        # Calcular los ingresos mensuales
+        ingresos_mensuales = defaultdict(int)
+        for dato in datos_tickets:
+            fecha = datetime.strptime(dato[0], "%d/%m/%Y")
+            mes = fecha.strftime("%B")  # Obtener el nombre del mes
+            ingreso = dato[1]
+            ingresos_mensuales[mes] += ingreso
+
+        # Obtener los nombres de los meses y los ingresos correspondientes
+        meses = list(ingresos_mensuales.keys())
+        ingresos = list(ingresos_mensuales.values())
+
+        def actualizarGrafico(mes_seleccionado):
+            # Filtrar los datos de la tabla "tickets" para el mes seleccionado
+            fechas_mes = []
+            montos_mes = []
+
+            for dato in datos_tickets:
+                fecha = datetime.strptime(dato[0], "%d/%m/%Y")
+                mes = fecha.strftime("%B")
+                if mes == mes_seleccionado:
+                    fechas_mes.append(fecha.strftime("%d"))  # Obtener solo el día
+                    montos_mes.append(dato[1])
+
+            # Limpiar el gráfico anterior
+            ax.clear()
+
+            # Actualizar el gráfico de barras de ingresos mensuales
+            ax.bar(fechas_mes, montos_mes)
+            ax.set_title('Ingresos Mensuales')
+            ax.set_xlabel('Día')
+            ax.set_ylabel('Ingreso')
+            ax.set_xticklabels(fechas_mes)
+
+            # Mostrar el gráfico actualizado en la ventana
+            canvas.draw()
+
+            # Obtener el ingreso total del mes seleccionado
+            ingreso_total = ingresos[meses.index(mes_seleccionado)]
+            etiqueta_ingreso_total.config(text=f'Ingreso Total: ${ingreso_total}')
+
+            # Obtener el ingreso del periodo anterior
+            indice_mes = meses.index(mes_seleccionado)
+            if mes_seleccionado == "January":
+                etiqueta_ingreso_anterior.config(text='Ingreso periodo anterior: -')
+            else:
+                ingreso_anterior = ingresos[indice_mes - 1]
+                etiqueta_ingreso_anterior.config(text=f'Ingreso periodo anterior: ${ingreso_anterior}')
+
+        # Crear la ventana de reporte de ingresos mensuales
+        ventana_reporte = tk.Tk()
+        ventana_reporte.title('Reporte de Ingresos Mensuales')
+
+        # Crear menú desplegable para seleccionar el mes
+        etiqueta_mes = tk.Label(ventana_reporte, text='Seleccione el mes:')
+        etiqueta_mes.pack()
+
+        mes_seleccionado = tk.StringVar(ventana_reporte)
+        mes_seleccionado.set(meses[0])  # Establecer el primer mes como opción por defecto
+
+        menu_mes = tk.OptionMenu(ventana_reporte, mes_seleccionado, *meses, command=actualizarGrafico)
+        menu_mes.pack()
+
+        # Calcular los ingresos del mes seleccionado y filtrar los datos de la tabla "tickets"
+        ingresos_mes_seleccionado = ingresos[meses.index(mes_seleccionado.get())]
+
+        # Mostrar los datos de ingresos en etiquetas
+        etiqueta_periodo = tk.Label(ventana_reporte, text='Periodo:')
+        etiqueta_periodo.pack()
+
+        etiqueta_mes_seleccionado = tk.Label(ventana_reporte, text=f'{mes_seleccionado.get()}')
+        etiqueta_mes_seleccionado.pack()
+
+        etiqueta_ingreso_total = tk.Label(ventana_reporte, text=f'Ingreso Total: ${ingresos_mes_seleccionado}')
+        etiqueta_ingreso_total.pack()
+
+        etiqueta_ingreso_anterior = tk.Label(ventana_reporte, text='')
+        etiqueta_ingreso_anterior.pack()
+
+        # Crear el gráfico de barras de ingresos mensuales
+        fig = plt.Figure(figsize=(6, 4), dpi=100)
+        ax = fig.add_subplot(111)
+        ax.bar([], [])
+        ax.set_title('Ingresos Mensuales')
+        ax.set_xlabel('Día')
+        ax.set_ylabel('Ingreso')
+
+        # Mostrar el gráfico vacío en la ventana
+        canvas = FigureCanvasTkAgg(fig, master=ventana_reporte)
+        canvas.draw()
+        canvas.get_tk_widget().pack()
+
+        # Mostrar la ventana de reporte
+        ventana_reporte.mainloop()
 
     def asignarUbicacion(self):
         # Cargar la matriz de estacionamiento desde el archivo
@@ -445,7 +607,25 @@ def main():
             elif opcion == 3:
                 sistema.verEstacionamiento()
             elif opcion == 4:
-                pass
+                 while True:
+                    print("\n---- MENU REPORTES ----")
+                    print("1. Reporte de Ingresos Mensuales")
+                    print("2. Reporte de Tipos de Vehículos")
+                    print("3. Reporte de Tickets por Día")
+                    print("4. Volver al Menú Principal")
+
+                    opcion_reporte = int(input("Ingrese una opción: "))
+
+                    if opcion_reporte == 1:
+                        Sistema.generarReporteIngresosMensuales()
+                    elif opcion_reporte == 2:
+                        Sistema.generarReporteIngresosMensuales()
+                    elif opcion_reporte == 3:
+                        Sistema.generarReporteIngresosMensuales()
+                    elif opcion_reporte == 4:
+                        break
+                    else:
+                        print("Opción inválida. Intente nuevamente.")
             elif opcion == 5:
                 sistema.crearEstacionamiento()
             elif opcion == 6:
