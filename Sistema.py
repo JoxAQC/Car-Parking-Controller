@@ -499,7 +499,128 @@ class Sistema:
             return nombreCliente
 
         return None
+    
 
+
+    # Conectar a la base de datos y obtener los datos de los tickets
+    def obtener_datos_tickets():
+        # Conectar a la base de datos
+        conexion = sql.connect(nombreBD)
+        cursor = conexion.cursor()
+
+        # Obtener todos los datos de la tabla "Tickets"
+        cursor.execute("SELECT fecha, monto FROM Tickets")
+        datos_tickets = cursor.fetchall()
+
+        # Cerrar la conexión a la base de datos
+        conexion.close()
+
+        return datos_tickets
+
+    def generarReporteAnual():
+        # Obtener los datos de los tickets
+        datos_tickets = Sistema.obtener_datos_tickets()
+
+        # Calcular los ingresos anuales por mes
+        ingresos_anuales = defaultdict(lambda: defaultdict(int))
+        for dato in datos_tickets:
+            fecha = datetime.strptime(dato[0], "%d/%m/%Y")
+            anio = fecha.strftime("%Y")  # Obtener el año
+            mes = fecha.strftime("%B")  # Obtener el nombre del mes
+            ingreso = dato[1]
+            ingresos_anuales[anio][mes] += ingreso
+
+        # Obtener los años disponibles
+        anios = sorted(ingresos_anuales.keys())
+
+        def actualizarGrafico(anio_seleccionado):
+            # Obtener los meses y los ingresos del año seleccionado
+            ingresos_meses = ingresos_anuales[anio_seleccionado]
+            meses = list(ingresos_meses.keys())
+            ingresos = list(ingresos_meses.values())
+
+            # Limpiar el gráfico anterior
+            ax.clear()
+
+            # Actualizar el gráfico de barras de ingresos anuales
+            ax.bar(meses, ingresos)
+            ax.set_title(f'Ingresos Anuales - {anio_seleccionado}')
+            ax.set_xlabel('Mes')
+            ax.set_ylabel('Ingreso')
+
+            # Ajustar el tamaño de la letra de los meses
+            ax.tick_params(axis='x', labelrotation=45, labelsize=5)
+
+            # Mostrar el gráfico actualizado en la ventana
+            canvas.draw()
+
+            # Obtener el ingreso total del año seleccionado
+            ingreso_total = sum(ingresos)
+            etiqueta_ingreso_total.config(text=f'Ingreso Total: ${ingreso_total}')
+
+            # Obtener el ingreso del período anterior
+            indice_anio = anios.index(anio_seleccionado)
+            if indice_anio == 0:
+                etiqueta_ingreso_anterior.config(text='Ingreso año anterior: -')
+            else:
+                anio_anterior = anios[indice_anio - 1]
+                ingreso_anterior = sum(ingresos_anuales[anio_anterior].values())
+                etiqueta_ingreso_anterior.config(text=f'Ingreso año anterior: ${ingreso_anterior}')
+
+            # Actualizar el campo de etiqueta "Periodo"
+            etiqueta_anio_seleccionado.config(text=anio_seleccionado)
+
+        # Crear la ventana de reporte anual
+        ventana_reporte = tk.Tk()
+        ventana_reporte.title('Reporte Anual')
+
+        # Crear menú desplegable para seleccionar el año
+        etiqueta_anio = tk.Label(ventana_reporte, text='Seleccione el año:')
+        etiqueta_anio.pack()
+
+        anio_seleccionado = tk.StringVar(ventana_reporte)
+        anio_seleccionado.set(anios[0])  # Establecer el primer año como opción por defecto
+
+        menu_anio = tk.OptionMenu(ventana_reporte, anio_seleccionado, *anios, command=actualizarGrafico)
+        menu_anio.pack()
+
+        # Calcular los ingresos del año seleccionado y filtrar los datos de la tabla "tickets"
+        ingresos_anio_seleccionado = ingresos_anuales[anio_seleccionado.get()]
+        meses_seleccionados = list(ingresos_anio_seleccionado.keys())
+        ingresos_seleccionados = list(ingresos_anio_seleccionado.values())
+
+        # Mostrar los datos de ingresos en etiquetas
+        etiqueta_periodo = tk.Label(ventana_reporte, text='Año:')
+        etiqueta_periodo.pack()
+
+        etiqueta_anio_seleccionado = tk.Label(ventana_reporte, text=f'{anio_seleccionado.get()}')
+        etiqueta_anio_seleccionado.pack()
+
+        etiqueta_ingreso_total = tk.Label(ventana_reporte, text=f'Ingreso Total: ${sum(ingresos_seleccionados)}')
+        etiqueta_ingreso_total.pack()
+
+        etiqueta_ingreso_anterior = tk.Label(ventana_reporte, text='')
+        etiqueta_ingreso_anterior.pack()
+
+        # Crear el gráfico de barras de ingresos anuales
+        fig = plt.Figure(figsize=(6, 4), dpi=100)
+        ax = fig.add_subplot(111)
+        ax.bar([], [])
+        ax.set_title('Ingresos Anuales')
+        ax.set_xlabel('Mes')
+        ax.set_ylabel('Ingreso')
+
+        # Mostrar el gráfico vacío en la ventana
+        canvas = FigureCanvasTkAgg(fig, master=ventana_reporte)
+        canvas.draw()
+        canvas.get_tk_widget().pack()
+
+        # Mostrar la ventana de reporte
+        ventana_reporte.mainloop()
+
+    
+ 
+    
 def main():
     # usuario = input()
     # contrasenia = input()
@@ -609,19 +730,16 @@ def main():
             elif opcion == 4:
                  while True:
                     print("\n---- MENU REPORTES ----")
-                    print("1. Reporte de Ingresos Mensuales")
-                    print("2. Reporte de Tipos de Vehículos")
-                    print("3. Reporte de Tickets por Día")
-                    print("4. Volver al Menú Principal")
-
+                    print("1. Reporte de Ingresos Diarios")
+                    print("2. Reporte de Ingresos Mensuales")
+                    print("3. Reporte de Ingresos Anuales")
                     opcion_reporte = int(input("Ingrese una opción: "))
-
                     if opcion_reporte == 1:
-                        Sistema.generarReporteIngresosMensuales()
+                        pass
                     elif opcion_reporte == 2:
                         Sistema.generarReporteIngresosMensuales()
                     elif opcion_reporte == 3:
-                        Sistema.generarReporteIngresosMensuales()
+                        Sistema.generarReporteAnual()
                     elif opcion_reporte == 4:
                         break
                     else:
