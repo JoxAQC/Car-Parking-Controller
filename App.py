@@ -1,4 +1,5 @@
 import customtkinter
+import tkinter
 from tkinter import ttk
 import tkinter as tk
 import os
@@ -67,6 +68,18 @@ class App(customtkinter.CTk):
                                                       fg_color="transparent", text_color=("gray10", "gray90"), hover_color=("gray70", "gray30"),
                                                       image=self.historial_image, anchor="w", command=self.frame_4_button_event)
         self.frame_4_button.grid(row=4, column=0, sticky="ew")
+
+        self.radiobutton_frame = customtkinter.CTkFrame(self.navigation_frame)
+        self.radiobutton_frame.grid(row=5, column=0, padx=(20, 20), pady=(20, 0), sticky="nsew")
+        self.radio_var = tkinter.IntVar(value=0)
+        self.label_radio_group = customtkinter.CTkLabel(master=self.radiobutton_frame, text="Generar reporte")
+        self.label_radio_group.grid(row=0, column=2, columnspan=1, padx=10, pady=10, sticky="")
+        self.radio_button_1 = customtkinter.CTkRadioButton(master=self.radiobutton_frame, variable=self.radio_var, value=0, text="R. Diario", command=self.reporteDiario)
+        self.radio_button_1.grid(row=1, column=2, pady=10, padx=20, sticky="n")
+        self.radio_button_2 = customtkinter.CTkRadioButton(master=self.radiobutton_frame, variable=self.radio_var, value=1, text="R. Semanal", command=self.reporteSem)
+        self.radio_button_2.grid(row=2, column=2, pady=10, padx=20, sticky="n")
+        self.radio_button_3 = customtkinter.CTkRadioButton(master=self.radiobutton_frame, variable=self.radio_var, value=2, text="R. Anual", command=self.reporteAnual)
+        self.radio_button_3.grid(row=3, column=2, pady=10, padx=20, sticky="n")
 
         self.appearance_mode_menu = customtkinter.CTkOptionMenu(self.navigation_frame, values=["Dark", "Light", "System"],
                                                                 command=self.change_appearance_mode_event)
@@ -345,6 +358,15 @@ class App(customtkinter.CTk):
 
         for element in self.datos2:
             self.fourth_frame.insert("","end",text=element[0], values=(element[1],element[5], element[6], element[2], element[3], element[7], element[6]))
+
+    def reporteDiario(self):
+        Sistema.generarReporteDiario()
+
+    def reporteSem(self):
+        Sistema.generarReporteIngresosMensuales()
+
+    def reporteAnual(self):
+        Sistema.generarReporteAnual()
 
 
 ventanaIniciarSesion = customtkinter.CTk()
