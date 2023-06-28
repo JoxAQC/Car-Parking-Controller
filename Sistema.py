@@ -13,6 +13,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from collections import defaultdict
 from datetime import datetime
 from datetime import date
+from tkinter import ttk
 
 nombreBD = "BDCarParking.db"
 
@@ -681,7 +682,63 @@ class Sistema:
         # Mostrar la ventana de reporte
         ventana_reporte.mainloop()
 
-    
+    def generarReporteDiario():
+        # Obtener la fecha actual en el formato "dd/mm/yyyy"
+        fecha_actual = datetime.now().strftime("%d/%m/%Y")
+
+        # Conectar a la base de datos
+        conexion = sql.connect(nombreBD)
+        cursor = conexion.cursor()
+
+        # Obtener todos los datos de la tabla "Tickets" para la fecha actual
+        cursor.execute("SELECT idTicket, nombreCliente, horaIngreso, horaSalida, placaVehiculo, monto, horasTotales FROM Tickets WHERE fecha = ? ORDER BY horaIngreso ASC", (fecha_actual,))
+        datos_tickets = cursor.fetchall()
+
+        # Cerrar la conexión a la base de datos
+        conexion.close()
+
+        # Crear la ventana de reporte diario
+        ventana_reporte = tk.Tk()
+        ventana_reporte.title(f'Reporte Diario - Estacionamiento MONO')
+
+        # Crear la etiqueta de título del reporte
+        etiqueta_titulo = ttk.Label(ventana_reporte, text=f'Reporte Diario - {fecha_actual}', font=("Arial", 14, "bold"))
+        etiqueta_titulo.pack(padx=10, pady=10)
+
+        # Crear el cuadro de datos
+        cuadro_datos = ttk.Treeview(ventana_reporte)
+        cuadro_datos["columns"] = ("ID", "Cliente", "Hora de Ingreso", "Hora de Salida", "Placa", "Monto", "Horas Totales")
+
+        # Configurar las columnas
+        cuadro_datos.column("#0", width=0, stretch=tk.NO)
+        cuadro_datos.column("ID", anchor=tk.CENTER, width=80)
+        cuadro_datos.column("Cliente", anchor=tk.W, width=150)
+        cuadro_datos.column("Hora de Ingreso", anchor=tk.CENTER, width=100)
+        cuadro_datos.column("Hora de Salida", anchor=tk.CENTER, width=100)
+        cuadro_datos.column("Placa", anchor=tk.CENTER, width=100)
+        cuadro_datos.column("Monto", anchor=tk.CENTER, width=80)
+        cuadro_datos.column("Horas Totales", anchor=tk.CENTER, width=100)
+
+        # Configurar encabezados de columna
+        cuadro_datos.heading("#0", text="", anchor=tk.CENTER)
+        cuadro_datos.heading("ID", text="ID", anchor=tk.CENTER)
+        cuadro_datos.heading("Cliente", text="Cliente", anchor=tk.W)
+        cuadro_datos.heading("Hora de Ingreso", text="Hora de Ingreso", anchor=tk.CENTER)
+        cuadro_datos.heading("Hora de Salida", text="Hora de Salida", anchor=tk.CENTER)
+        cuadro_datos.heading("Placa", text="Placa", anchor=tk.CENTER)
+        cuadro_datos.heading("Monto", text="Monto", anchor=tk.CENTER)
+        cuadro_datos.heading("Horas Totales", text="Horas Totales", anchor=tk.CENTER)
+
+        # Agregar los datos de los tickets a la tabla
+        for dato in datos_tickets:
+            hora_ingreso = dato[2].split(" ")[1]
+            hora_salida = dato[3].split(" ")[1] if dato[3] else ""
+            cuadro_datos.insert("", tk.END, text="", values=(dato[0], dato[1], hora_ingreso, hora_salida, dato[4], dato[5], dato[6]))
+
+        cuadro_datos.pack(padx=10, pady=10)
+
+        # Ejecutar la ventana de reporte
+        ventana_reporte.mainloop()
  
     
 def main():
@@ -798,7 +855,7 @@ def main():
                     print("3. Reporte de Ingresos Anuales")
                     opcion_reporte = int(input("Ingrese una opción: "))
                     if opcion_reporte == 1:
-                        pass
+                        Sistema.generarReporteDiario()
                     elif opcion_reporte == 2:
                         Sistema.generarReporteIngresosMensuales()
                     elif opcion_reporte == 3:
