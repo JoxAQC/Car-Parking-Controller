@@ -19,10 +19,10 @@ nombreBD = "BDCarParking.db"
 class Sistema:
     def __init__(self, estado):
         self.__estado = estado
-        self.__tarifas = [2.50, 4.50, 6.50]
 
-    def get_tarifas(self):
-        return self.__tarifas
+    def get_tarifas():
+        tarifas = [2.50, 4.50, 6.50]
+        return tarifas
 
     # Setter para el atributo estado
     def set_estado(self, estado):
@@ -203,27 +203,38 @@ class Sistema:
             ingresos_mensuales[mes] += ingreso
 
         # Obtener los nombres de los meses y los ingresos correspondientes
-        meses = list(ingresos_mensuales.keys())
-        ingresos = list(ingresos_mensuales.values())
+        meses = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+        ingresos = [ingresos_mensuales[mes] for mes in meses]
 
-        def actualizarGrafico(mes_seleccionado):
-            # Filtrar los datos de la tabla "tickets" para el mes seleccionado
+        def actualizarGrafico(mes_seleccionado, anio_seleccionado):
+            # Filtrar los datos de la tabla "tickets" para el mes y año seleccionados
             fechas_mes = []
             montos_mes = []
 
             for dato in datos_tickets:
                 fecha = datetime.strptime(dato[0], "%d/%m/%Y")
                 mes = fecha.strftime("%B")
-                if mes == mes_seleccionado:
+                anio = fecha.strftime("%Y")
+                if mes == mes_seleccionado and anio == anio_seleccionado:
                     fechas_mes.append(fecha.strftime("%d"))  # Obtener solo el día
                     montos_mes.append(dato[1])
+
+            # Obtener los ingresos mensuales del año seleccionado
+            ingresos_mensuales_anio = defaultdict(int)
+            for dato in datos_tickets:
+                fecha = datetime.strptime(dato[0], "%d/%m/%Y")
+                anio = fecha.strftime("%Y")
+                if anio == anio_seleccionado:
+                    mes = fecha.strftime("%B")
+                    ingreso = dato[1]
+                    ingresos_mensuales_anio[mes] += ingreso
 
             # Limpiar el gráfico anterior
             ax.clear()
 
             # Actualizar el gráfico de barras de ingresos mensuales
             ax.bar(fechas_mes, montos_mes)
-            ax.set_title('Ingresos Mensuales')
+            ax.set_title(f'Ingresos Mensuales - {mes_seleccionado} {anio_seleccionado}')
             ax.set_xlabel('Día')
             ax.set_ylabel('Ingreso')
             ax.set_xticklabels(fechas_mes)
@@ -231,21 +242,49 @@ class Sistema:
             # Mostrar el gráfico actualizado en la ventana
             canvas.draw()
 
-            # Obtener el ingreso total del mes seleccionado
-            ingreso_total = ingresos[meses.index(mes_seleccionado)]
+            # Obtener el ingreso total del mes seleccionado y año seleccionado
+            ingreso_total = sum(montos_mes)
             etiqueta_ingreso_total.config(text=f'Ingreso Total: ${ingreso_total}')
 
-            # Obtener el ingreso del periodo anterior
+            # Obtener el ingreso del periodo anterior correspondiente al mes y año seleccionado
             indice_mes = meses.index(mes_seleccionado)
-            if mes_seleccionado == "January":
-                etiqueta_ingreso_anterior.config(text='Ingreso periodo anterior: -')
+            if mes_seleccionado == 'January':
+                etiqueta_ingreso_anterior.config(text='Ingreso periodo anterior: -----')
+            elif indice_mes == 0:
+                if anios.index(anio_seleccionado) == 0:
+                    etiqueta_ingreso_anterior.config(text='Ingreso periodo anterior: -')
+                else:
+                    anio_anterior = anios[anios.index(anio_seleccionado) - 1]
+                    if meses[-1] == "January":
+                        etiqueta_ingreso_anterior.config(text='Ingreso periodo anterior: -----')
+                    else:
+                        ingreso_anterior = ingresos_mensuales_anio[(meses[-1])]
+                        etiqueta_ingreso_anterior.config(text=f'Ingreso periodo anterior: ${ingreso_anterior}')
             else:
-                ingreso_anterior = ingresos[indice_mes - 1]
+                mes_anterior = meses[indice_mes - 1]
+                ingreso_anterior = ingresos_mensuales_anio[(mes_anterior)]
                 etiqueta_ingreso_anterior.config(text=f'Ingreso periodo anterior: ${ingreso_anterior}')
+
+            # Actualizar la etiqueta de periodo con el mes y año seleccionado
+            etiqueta_mes_seleccionado.config(text=f'{mes_seleccionado} {anio_seleccionado}')
+
+        # Obtener los años disponibles en los datos
+        anios = list(set([datetime.strptime(dato[0], "%d/%m/%Y").strftime("%Y") for dato in datos_tickets]))
+        anios.sort()
 
         # Crear la ventana de reporte de ingresos mensuales
         ventana_reporte = tk.Tk()
         ventana_reporte.title('Reporte de Ingresos Mensuales')
+
+        # Crear menú desplegable para seleccionar el año
+        etiqueta_anio = tk.Label(ventana_reporte, text='Seleccione el año:')
+        etiqueta_anio.pack()
+
+        anio_seleccionado = tk.StringVar(ventana_reporte)
+        anio_seleccionado.set(anios[0])  # Establecer el primer año como opción por defecto
+
+        menu_anio = tk.OptionMenu(ventana_reporte, anio_seleccionado, *anios, command=lambda _: actualizarGrafico(mes_seleccionado.get(), anio_seleccionado.get()))
+        menu_anio.pack()
 
         # Crear menú desplegable para seleccionar el mes
         etiqueta_mes = tk.Label(ventana_reporte, text='Seleccione el mes:')
@@ -254,7 +293,7 @@ class Sistema:
         mes_seleccionado = tk.StringVar(ventana_reporte)
         mes_seleccionado.set(meses[0])  # Establecer el primer mes como opción por defecto
 
-        menu_mes = tk.OptionMenu(ventana_reporte, mes_seleccionado, *meses, command=actualizarGrafico)
+        menu_mes = tk.OptionMenu(ventana_reporte, mes_seleccionado, *meses, command=lambda _: actualizarGrafico(mes_seleccionado.get(), anio_seleccionado.get()))
         menu_mes.pack()
 
         # Calcular los ingresos del mes seleccionado y filtrar los datos de la tabla "tickets"
@@ -264,7 +303,7 @@ class Sistema:
         etiqueta_periodo = tk.Label(ventana_reporte, text='Periodo:')
         etiqueta_periodo.pack()
 
-        etiqueta_mes_seleccionado = tk.Label(ventana_reporte, text=f'{mes_seleccionado.get()}')
+        etiqueta_mes_seleccionado = tk.Label(ventana_reporte, text=f'{mes_seleccionado.get()} {anio_seleccionado.get()}')
         etiqueta_mes_seleccionado.pack()
 
         etiqueta_ingreso_total = tk.Label(ventana_reporte, text=f'Ingreso Total: ${ingresos_mes_seleccionado}')
