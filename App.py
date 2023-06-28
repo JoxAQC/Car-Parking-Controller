@@ -64,7 +64,7 @@ class App(customtkinter.CTk):
                                                       image=self.manage_image, anchor="w", command=self.frame_3_button_event)
         self.frame_3_button.grid(row=3, column=0, sticky="ew")
 
-        self.frame_4_button = customtkinter.CTkButton(self.navigation_frame, corner_radius=0, height=40, border_spacing=10, text="Historial y reportes",
+        self.frame_4_button = customtkinter.CTkButton(self.navigation_frame, corner_radius=0, height=40, border_spacing=10, text="Historial",
                                                       fg_color="transparent", text_color=("gray10", "gray90"), hover_color=("gray70", "gray30"),
                                                       image=self.historial_image, anchor="w", command=self.frame_4_button_event)
         self.frame_4_button.grid(row=4, column=0, sticky="ew")
