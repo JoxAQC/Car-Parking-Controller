@@ -125,9 +125,7 @@ class Sistema:
                     ubicacion_ticket = ticket.get_ubicacion()
                     Sistema.liberarUbicacion(ubicacion_ticket)
 
-                    # Después de actualizar el ticket más reciente
-                    Sistema.imprimirTicket(ticket) 
-        pass
+                    return ticket
 
     def imprimirTicket(ticket):
         ventana = tk.Tk()

@@ -79,19 +79,7 @@ class App(customtkinter.CTk):
         self.home_frame_large_image_label = customtkinter.CTkLabel(self.home_frame, text="Estacionamiento Disponible", font=customtkinter.CTkFont(size=20, weight="bold"))
         self.home_frame_large_image_label.grid(row=0, column=3, columnspan=15, padx=30, pady=(15, 15), sticky="nsew")
 
-        #, fg_color="red"
-        estacionamiento=Sistema.devolverstacionamiento()
-
-        for j, fila in enumerate(estacionamiento):
-            i=0
-            for valor in fila:
-                i=i+1
-                if valor==1:
-                    self.home_frame_button = customtkinter.CTkButton(self.home_frame, text="", width=10, height=10,state="disabled", fg_color="red")
-                    self.home_frame_button.grid(row=j+1, column=i, padx=15, pady=5.5)
-                else:
-                    self.home_frame_button = customtkinter.CTkButton(self.home_frame, text="", width=10, height=10,state="disabled")
-                    self.home_frame_button.grid(row=j+1, column=i, padx=15, pady=5.5)
+        self.mostrarEstacionamiento()
 
         # create second frame
         self.second_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color="transparent")
@@ -158,9 +146,7 @@ class App(customtkinter.CTk):
         self.fourth_frame.heading("col6", text="Horas", anchor="center")
         self.fourth_frame.heading("col7", text="Monto", anchor="center")
 
-        self.datos2 = Sistema.recopilarHistorial()
-        for element in self.datos2:
-            self.fourth_frame.insert("","end",text=element[0], values=(element[1],element[2], element[3], element[4], element[5], element[6], element[7]))
+        self.mostrarHistorial()
 
         # select default frame
         self.select_frame_by_name("home")
@@ -243,7 +229,6 @@ class App(customtkinter.CTk):
             self.type_entry.configure(state="normal")
             self.buscarCliente_button.configure(text="Registrar", command=self.registrarAuto) 
             self.mostrar_cuadro_emergente()
-            self.reiniciar()
         else:
             self.name_entry.configure(state="disabled")
             self.buscarCliente_button.configure(state="disabled")
@@ -301,8 +286,12 @@ class App(customtkinter.CTk):
         self.reiniciar()
             
     def show_selection(self):
-        self.placa_ret.delete(0, 'end')
-        Sistema.liberarVehiculo(self.placa_ret.get())
+        placa = self.placa_ret.get()
+        ticket = Sistema.liberarVehiculo(placa)
+        self.reiniciar()
+
+        # Después de actualizar el ticket más reciente
+        Sistema.imprimirTicket(ticket) 
 
     def mostrar_cuadro_emergente(self):
         cuadro_emergente = tk.Toplevel()
@@ -312,6 +301,8 @@ class App(customtkinter.CTk):
         mensaje_label.pack(padx=20, pady=20)
 
     def reiniciar(self):
+        self.mostrarEstacionamiento()
+        self.mostrarHistorial()
         self.placa_entry.delete(0, 'end')
         self.buscar_button.configure(state="normal")
 
@@ -323,6 +314,38 @@ class App(customtkinter.CTk):
         self.contact_entry.configure(placeholder_text="Contacto", state="disabled")
         self.type_entry.configure(state="disabled")
         self.registrar_button.configure(state="disabled")
+        self.placa_ret.delete(0, 'end')
+
+
+    def mostrarEstacionamiento(self):
+        estacionamiento=Sistema.devolverstacionamiento()
+  
+        for j, fila in enumerate(estacionamiento):
+            i=0
+            for valor in fila:
+                i=i+1
+                if valor==1:
+                    self.home_frame_button = customtkinter.CTkButton(self.home_frame, text="", width=10, height=10,state="disabled", fg_color="red")
+                    self.home_frame_button.grid(row=j+1, column=i, padx=15, pady=5.5)
+                else:
+                    self.home_frame_button = customtkinter.CTkButton(self.home_frame, text="", width=10, height=10,state="disabled")
+                    self.home_frame_button.grid(row=j+1, column=i, padx=15, pady=5.5)
+
+    def mostrarHistorial(self):
+        self.datos2 = Sistema.recopilarHistorial()
+
+        self.fourth_frame.heading("#0", text="ID", anchor="center")
+        self.fourth_frame.heading("col1", text="Nombre", anchor="center")
+        self.fourth_frame.heading("col2", text="Placa", anchor="center")
+        self.fourth_frame.heading("col3", text="Ubicación", anchor="center")
+        self.fourth_frame.heading("col4", text="Ingreso", anchor="center")
+        self.fourth_frame.heading("col5", text="Salida", anchor="center")
+        self.fourth_frame.heading("col6", text="Horas", anchor="center")
+        self.fourth_frame.heading("col7", text="Monto", anchor="center")
+
+        for element in self.datos2:
+            self.fourth_frame.insert("","end",text=element[0], values=(element[1],element[5], element[6], element[2], element[3], element[7], element[6]))
+
 
 ventanaIniciarSesion = customtkinter.CTk()
 
