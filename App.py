@@ -1,11 +1,17 @@
 import customtkinter
 from tkinter import ttk
+import tkinter as tk
 import os
 from PIL import Image
 from Sistema import Sistema
+from Ticket import Ticket
+from Vehiculo import Vehiculo
+from Cliente import Cliente
 
 customtkinter.set_appearance_mode("dark")
 customtkinter.set_default_color_theme("dark-blue")
+
+tarifas = [2.50, 4.50, 6.50]
 
 class App(customtkinter.CTk):
     def __init__(self):
@@ -104,29 +110,18 @@ class App(customtkinter.CTk):
         self.registrar_button.grid(row=5, column=0, columnspan=2, padx=30, pady=(15, 15))
 
         # create third frame
-        self.third_frame = ttk.Treeview(self, columns=("col1","col2","col3","col4"))
-        # self.third_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color="transparent")
-        # self.third_frame.grid_columnconfigure(0, weight=1)
+        self.third_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color="transparent")
+        self.third_frame.grid_columnconfigure(0, weight=1)
         
+        self.reg_label = customtkinter.CTkLabel(self.third_frame, text="Retirar Vehículo",
+                                                  font=customtkinter.CTkFont(size=20, weight="bold"))
+        self.reg_label.grid(row=0, column=0, columnspan=2, padx=30, pady=(30, 15))
 
-        self.third_frame.column("#0",width=60, anchor="center")
-        self.third_frame.column("col1",width=80, anchor="center")
-        self.third_frame.column("col2",width=100, anchor="center")
-        self.third_frame.column("col3",width=80, anchor="center")
-        self.third_frame.column("col4",width=80, anchor="center")
+        self.placa_ret = customtkinter.CTkEntry(self.third_frame, width=300, placeholder_text="Ingrese la placa")
+        self.placa_ret.grid(row=1, column=0, padx=(30,15), pady=(15, 15))
 
-        self.third_frame.heading("#0", text="ID", anchor="center")
-        self.third_frame.heading("col1", text="Nombre", anchor="center")
-        self.third_frame.heading("col2", text="Ingreso", anchor="center")
-        self.third_frame.heading("col3", text="Placa", anchor="center")
-        self.third_frame.heading("col4", text="Ubicación", anchor="center")
-
-        self.datos = [["8959524","Sebastian","18/06/2023 11:44:56","SEB666","1"],["1234567","Sebastian","18/06/2023 11:44:56","SEB666","1"]]
-        for element in self.datos:
-            self.third_frame.insert("","end",text=element[0], values=(element[1],element[2], element[3], element[4]))
-
-        self.reg = customtkinter.CTkButton(self.third_frame, text="Retirar",  width=200, command=self.show_selection)
-        self.reg.grid(row=5, column=5, columnspan=2, padx=300, pady=(400,0))
+        self.ret = customtkinter.CTkButton(self.third_frame, text="Retirar",  width=200, command=self.show_selection)
+        self.ret.grid(row=2, column=0, padx=15, pady=15)
 
 
 
@@ -154,8 +149,7 @@ class App(customtkinter.CTk):
         self.fourth_frame.heading("col6", text="Horas", anchor="center")
         self.fourth_frame.heading("col7", text="Monto", anchor="center")
 
-
-        self.datos2 = [["8959524","Sebastian","SEB666","1", "18/06/2023 11:44:56","18/06/2023 11:44:56", "11:44:56", "4.5"]]
+        self.datos2 = Sistema.recopilarHistorial()
         for element in self.datos2:
             self.fourth_frame.insert("","end",text=element[0], values=(element[1],element[2], element[3], element[4], element[5], element[6], element[7]))
 
@@ -203,9 +197,31 @@ class App(customtkinter.CTk):
         customtkinter.set_appearance_mode(new_appearance_mode)
 
     def buscarPorPlaca(self):
-        placa = "abc"
-        if self.placa_entry.get() == placa:
-            print("Hola uwu")
+        vehiculoEncontrado = Sistema.buscarPlaca(self.placa_entry.get())
+        if vehiculoEncontrado:
+            idTicket = Sistema.generarIdAleatorio()
+            horaIngreso = Sistema.obtenerFechaHoraActual()
+            horaSalida = ""
+            fecha = Sistema.obtenerFechaActual()
+            monto = 0
+            horasTotales = 0
+            ubicacion = int(Sistema.asignarUbicacion())
+            print(ubicacion)
+            vehiculo = Sistema.obtenerVehiculoPlaca(self.placa_entry.get())
+            tipo = vehiculo.get_tipo()
+            if tipo == "moto":
+                monto = tarifas[0]  # Obtener el valor de la posición 0 del vector de tarifas
+            elif tipo == "auto":
+                monto = tarifas[1]  # Obtener el valor de la posición 1 del vector de tarifas
+            elif tipo == "camioneta":
+                monto = tarifas[2]  # Obtener el valor de la posición 2 del vector de tarifas
+            nombreCliente = Sistema.obtenerNombreClientePorPlaca(self.placa_entry.get())
+            vehiculoTicket = [vehiculo]
+            cliente = Sistema.obtenerClientePorNombre(nombreCliente)
+            ticketNuevo = Ticket(idTicket, horaIngreso, horaSalida, fecha, ubicacion,vehiculoTicket, monto, horasTotales)
+            Sistema.generarTicket(cliente,vehiculo,ticketNuevo,ubicacion)
+            self.mostrar_cuadro_emergente()
+            self.reiniciar()
         else:
             self.placa_entry.configure(state="disabled")
             self.buscar_button.configure(state="disabled")
@@ -213,10 +229,12 @@ class App(customtkinter.CTk):
             self.buscarCliente_button.configure(state="normal")
 
     def buscarPorNombre(self):
-        nombre = "abc"
-        if self.name_entry.get() == nombre:
-            print("Hola uwu ", nombre)
+        clienteEncontrado = Sistema.buscarNombre(self.name_entry.get())
+        if clienteEncontrado == True:
             self.type_entry.configure(state="normal")
+            self.buscarCliente_button.configure(text="Registrar", command=self.registrarAuto) 
+            self.mostrar_cuadro_emergente()
+            self.reiniciar()
         else:
             self.name_entry.configure(state="disabled")
             self.buscarCliente_button.configure(state="disabled")
@@ -224,25 +242,78 @@ class App(customtkinter.CTk):
             self.type_entry.configure(state="normal")
             self.registrar_button.configure(state="normal")
 
-    def registrarNuevo(self):
-        print("Hola nuevo :D")
-    
-    def show_selection(self):
-        try:
-            # Obtener el ID del primer elemento seleccionado.
-            item = self.third_frame.selection()[0]
+    def registrarAuto(self):
+        cliente = Sistema.obtenerClientePorNombre(self.name_entry.get())
+        idVehiculo = Sistema.generarIdAleatorio()
+        tipo = self.type_entry.get().lower()
+        vehiculo = (Vehiculo(idVehiculo, self.placa_entry.get(), tipo))
+        idTicket = Sistema.generarIdAleatorio()
+        horaIngreso = Sistema.obtenerFechaHoraActual()
+        horaSalida = ""
+        fecha = Sistema.obtenerFechaActual()
+        if tipo == "moto":
+            monto = tarifas[0]  # Obtener el valor de la posición 0 del vector de tarifas
+        elif tipo == "auto":
+            monto = tarifas[1]  # Obtener el valor de la posición 1 del vector de tarifas
+        elif tipo == "camioneta":
+            monto = tarifas[2]  # Obtener el valor de la posición 2 del vector de tarifas
+        horasTotales = 0
+        ubicacion = int(Sistema.asignarUbicacion())
+        ticketNuevo = Ticket(idTicket, horaIngreso, horaSalida, fecha, vehiculo,ubicacion, monto, horasTotales)
+        Sistema.registrarVehiculo(cliente,vehiculo)
+        Sistema.generarTicket(cliente,vehiculo,ticketNuevo,ubicacion)   
+        self.mostrar_cuadro_emergente()
+        self.reiniciar()
 
-        except IndexError:
-            # Si la tupla está vacía, entonces no hay ningún
-            # elemento seleccionado.
-            print("No hay elemento")
-        else:
-            # A partir de este ID retornar el texto del elemento.
-            text = self.third_frame.item(item, option="text")
-            # Mostrarlo en un cuadro de diálogo.
-            self.datos[:] = [sublista for sublista in self.datos if text not in sublista]
-            self.select_frame_by_name("frame_3")
-            print(self.datos)
+    def registrarNuevo(self):
+        idCliente = Sistema.generarIdAleatorio()
+        contacto = self.contact_entry.get()
+        idVehiculo = Sistema.generarIdAleatorio()
+        tipo = self.type_entry.get().lower()
+        if tipo == "moto":
+            monto = tarifas[0]  # Obtener el valor de la posición 0 del vector de tarifas
+        elif tipo == "auto":
+            monto = tarifas[1]  # Obtener el valor de la posición 1 del vector de tarifas
+        elif tipo == "camioneta":
+            monto = tarifas[2]  # Obtener el valor de la posición 2 del vector de tarifas
+        vehiculo = (Vehiculo(idVehiculo, self.placa_entry.get(), tipo))
+        idTicket = Sistema.generarIdAleatorio()
+        horaIngreso = Sistema.obtenerFechaHoraActual()
+        horaSalida = ""
+        fecha = Sistema.obtenerFechaActual()
+        horasTotales = 0
+        ubicacion = int(Sistema.asignarUbicacion())
+        ticketNuevo = Ticket(idTicket, horaIngreso, horaSalida, fecha, vehiculo,ubicacion, monto, horasTotales)
+        cliente = Cliente(idCliente,self.name_entry.get(),contacto)
+        Sistema.registrarCliente(cliente)
+        Sistema.registrarVehiculo(cliente,vehiculo)
+        Sistema.generarTicket(cliente,vehiculo,ticketNuevo,ubicacion)
+        self.mostrar_cuadro_emergente()
+        self.reiniciar()
+            
+    def show_selection(self):
+        self.placa_ret.delete(0, 'end')
+        Sistema.liberarVehiculo(self.placa_ret.get())
+
+    def mostrar_cuadro_emergente(self):
+        cuadro_emergente = tk.Toplevel()
+        cuadro_emergente.title("Mensaje")
+        
+        mensaje_label = tk.Label(cuadro_emergente, text="Correctamente registrado")
+        mensaje_label.pack(padx=20, pady=20)
+
+    def reiniciar(self):
+        self.placa_entry.delete(0, 'end')
+        self.buscar_button.configure(state="normal")
+
+        self.name_entry.delete(0, 'end')
+        self.name_entry.configure(placeholder_text="Nombre", state="disabled")
+        self.buscarCliente_button.configure(text="Buscar Cliente",state="disabled", command=self.buscarPorNombre)
+
+        self.contact_entry.delete(0, 'end')
+        self.contact_entry.configure(placeholder_text="Contacto", state="disabled")
+        self.type_entry.configure(state="disabled")
+        self.registrar_button.configure(state="disabled")
 
 ventanaIniciarSesion = customtkinter.CTk()
 
