@@ -6,6 +6,7 @@ from PIL import Image
 from Sistema import Sistema
 from Ticket import Ticket
 from Vehiculo import Vehiculo
+import numpy as np
 from Cliente import Cliente
 
 customtkinter.set_appearance_mode("dark")
@@ -79,10 +80,18 @@ class App(customtkinter.CTk):
         self.home_frame_large_image_label.grid(row=0, column=3, columnspan=15, padx=30, pady=(15, 15), sticky="nsew")
 
         #, fg_color="red"
-        for i in range(20):
-            for j in range(1,21):
-                self.home_frame_button = customtkinter.CTkButton(self.home_frame, text="", width=10, height=10,state="disabled")
-                self.home_frame_button.grid(row=j, column=i, padx=15, pady=5.5)
+        estacionamiento=Sistema.devolverstacionamiento()
+
+        for j, fila in enumerate(estacionamiento):
+            i=0
+            for valor in fila:
+                i=i+1
+                if valor==1:
+                    self.home_frame_button = customtkinter.CTkButton(self.home_frame, text="", width=10, height=10,state="disabled", fg_color="red")
+                    self.home_frame_button.grid(row=j+1, column=i, padx=15, pady=5.5)
+                else:
+                    self.home_frame_button = customtkinter.CTkButton(self.home_frame, text="", width=10, height=10,state="disabled")
+                    self.home_frame_button.grid(row=j+1, column=i, padx=15, pady=5.5)
 
         # create second frame
         self.second_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color="transparent")

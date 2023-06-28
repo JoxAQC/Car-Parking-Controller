@@ -319,6 +319,15 @@ class Sistema:
         estacionamiento[fila][columna] = 0
         # Guardar la matriz actualizada en el archivo
         np.savetxt('estacionamiento.txt', estacionamiento, fmt='%d')
+        
+    def devolverstacionamiento():
+        # Verificar la existencia del archivo de estacionamiento
+        try:
+            estacionamiento = np.loadtxt('estacionamiento.txt', dtype=int)
+        except IOError:
+            print("No se encontro el archivo de estacionamiento.")
+            return
+        return estacionamiento
 
     def verEstacionamiento():
         # Verificar la existencia del archivo de estacionamiento
