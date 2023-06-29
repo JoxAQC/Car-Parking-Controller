@@ -59,7 +59,7 @@ class App(customtkinter.CTk):
                                                       image=self.add_image, anchor="w", command=self.frame_2_button_event)
         self.frame_2_button.grid(row=2, column=0, sticky="ew")
 
-        self.frame_3_button = customtkinter.CTkButton(self.navigation_frame, corner_radius=0, height=40, border_spacing=10, text="Gestionar vehículos",
+        self.frame_3_button = customtkinter.CTkButton(self.navigation_frame, corner_radius=0, height=40, border_spacing=10, text="Retirar vehículos",
                                                       fg_color="transparent", text_color=("gray10", "gray90"), hover_color=("gray70", "gray30"),
                                                       image=self.manage_image, anchor="w", command=self.frame_3_button_event)
         self.frame_3_button.grid(row=3, column=0, sticky="ew")
@@ -241,7 +241,6 @@ class App(customtkinter.CTk):
         if clienteEncontrado == True:
             self.type_entry.configure(state="normal")
             self.buscarCliente_button.configure(text="Registrar", command=self.registrarAuto) 
-            self.mostrar_cuadro_emergente()
         else:
             self.name_entry.configure(state="disabled")
             self.buscarCliente_button.configure(state="disabled")
@@ -295,8 +294,9 @@ class App(customtkinter.CTk):
         Sistema.registrarCliente(cliente)
         Sistema.registrarVehiculo(cliente,vehiculo)
         Sistema.generarTicket(cliente,vehiculo,ticketNuevo,ubicacion)
-        self.mostrar_cuadro_emergente()
         self.reiniciar()
+        self.mostrar_cuadro_emergente()
+
             
     def show_selection(self):
         placa = self.placa_ret.get()
@@ -315,20 +315,25 @@ class App(customtkinter.CTk):
         mensaje_label.pack(padx=20, pady=20)
 
     def reiniciar(self):
-        self.mostrarEstacionamiento()
-        self.mostrarHistorial()
+        self.placa_entry.configure(placeholder_text="Placa", state="normal")
         self.placa_entry.delete(0, 'end')
+        self.placa_entry.configure(placeholder_text="Placa", state="normal")
         self.buscar_button.configure(state="normal")
 
+        self.name_entry.configure(placeholder_text="Nombre", state="normal")
         self.name_entry.delete(0, 'end')
         self.name_entry.configure(placeholder_text="Nombre", state="disabled")
         self.buscarCliente_button.configure(text="Buscar Cliente",state="disabled", command=self.buscarPorNombre)
 
+        self.contact_entry.configure(placeholder_text="Contacto", state="normal")
         self.contact_entry.delete(0, 'end')
         self.contact_entry.configure(placeholder_text="Contacto", state="disabled")
         self.type_entry.configure(state="disabled")
         self.registrar_button.configure(state="disabled")
         self.placa_ret.delete(0, 'end')
+
+        self.mostrarEstacionamiento()
+        self.mostrarHistorial()
 
 
     def mostrarEstacionamiento(self):

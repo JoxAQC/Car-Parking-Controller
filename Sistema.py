@@ -1,6 +1,5 @@
 from Administrador import Administrador
 from Cliente import Cliente
-from Reporte import Reporte
 from Ticket import Ticket
 from Vehiculo import Vehiculo
 import numpy as np
