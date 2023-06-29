@@ -9,7 +9,7 @@ Proyecto final Estructura de Datos
 
 ------------
 ### Integrantes del grupo 5
-- Espinoza Pacifico, Sebastian Jesus // [GHOPsT](https://github.com/SebastZip) //
+- Espinoza Pacifico, Sebastian Jesus // [SebastZip](https://github.com/SebastZip) //
 - Mirano Surquislla, Fiorella Patricia // [FiorellaMirano13](https://github.com/FiorellaMirano13) //
 - Quispe Cabello, José Alessandro // [JoxAQC](https://github.com/JoxAQC) //
 - Sanchez Wong, Jatziry Fernanda  // [jatmnk9](https://github.com/jatmnk9) //
