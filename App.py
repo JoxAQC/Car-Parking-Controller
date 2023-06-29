@@ -300,11 +300,12 @@ class App(customtkinter.CTk):
             
     def show_selection(self):
         placa = self.placa_ret.get()
+        placa = placa.upper()
         ticket = Sistema.liberarVehiculo(placa)
         self.reiniciar()
 
-        # Después de actualizar el ticket más reciente
-        Sistema.imprimirTicket(ticket) 
+        if ticket is not None:
+            Sistema.imprimirTicket(ticket)
 
     def mostrar_cuadro_emergente(self):
         cuadro_emergente = tk.Toplevel()

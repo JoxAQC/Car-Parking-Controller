@@ -90,6 +90,11 @@ class Sistema:
 
             for ticket in tickets:
                 if ticket == ticket_mas_reciente:
+                    # Verificar si el vehículo ya está liberado
+                    if ticket.get_horaSalida():
+                        tk.messagebox.showerror("Error", "El vehículo ya fue liberado.")
+                        return None
+
                     # Actualizar horaSalida
                     hora_salida = Sistema.obtenerFechaHoraActual()
                     ticket.set_horaSalida(hora_salida)
@@ -111,7 +116,7 @@ class Sistema:
                     # Actualizar monto
                     monto_actualizado = ticket.get_monto() * horas_totales
                     if monto_actualizado == 0:
-                        monto_actualizado=ticket.get_monto()
+                        monto_actualizado = ticket.get_monto()
                     ticket.set_monto(monto_actualizado)
 
                     # Actualizar el ticket en la base de datos
@@ -122,7 +127,7 @@ class Sistema:
                     conn.commit()
                     conn.close()
 
-                    # Obtener ubicacion del ticket6
+                    # Obtener ubicacion del ticket
                     ubicacion_ticket = ticket.get_ubicacion()
                     Sistema.liberarUbicacion(ubicacion_ticket)
 
@@ -770,6 +775,7 @@ def main():
             
             if opcion == 1:
                 placaBuscada = input("Ingrese la placa del vehiculo: ")
+                placaBuscada = placaBuscada.upper()
                 vehiculoEncontrado = Sistema.buscarPlaca(placaBuscada)
                 if vehiculoEncontrado == True:
                     #El cliente ya esta en la base de datos
