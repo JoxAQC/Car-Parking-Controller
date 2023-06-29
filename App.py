@@ -136,28 +136,6 @@ class App(customtkinter.CTk):
 
 
         # create fourth frame
-        self.fourth_frame = ttk.Treeview(self, columns=("col1","col2","col3","col4", "col5","col6", "col7"))
-        # self.third_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color="transparent")
-        # self.third_frame.grid_columnconfigure(0, weight=1)
-        
-
-        self.fourth_frame.column("#0",width=60, anchor="center")
-        self.fourth_frame.column("col1",width=80, anchor="center")
-        self.fourth_frame.column("col2",width=40, anchor="center")
-        self.fourth_frame.column("col3",width=20, anchor="center")
-        self.fourth_frame.column("col4",width=100, anchor="center")
-        self.fourth_frame.column("col5",width=100, anchor="center")
-        self.fourth_frame.column("col6",width=40, anchor="center")
-        self.fourth_frame.column("col7",width=20, anchor="center")
-
-        self.fourth_frame.heading("#0", text="ID", anchor="center")
-        self.fourth_frame.heading("col1", text="Nombre", anchor="center")
-        self.fourth_frame.heading("col2", text="Placa", anchor="center")
-        self.fourth_frame.heading("col3", text="Ubicación", anchor="center")
-        self.fourth_frame.heading("col4", text="Ingreso", anchor="center")
-        self.fourth_frame.heading("col5", text="Salida", anchor="center")
-        self.fourth_frame.heading("col6", text="Horas", anchor="center")
-        self.fourth_frame.heading("col7", text="Monto", anchor="center")
 
         self.mostrarHistorial()
 
@@ -310,9 +288,21 @@ class App(customtkinter.CTk):
     def mostrar_cuadro_emergente(self):
         cuadro_emergente = tk.Toplevel()
         cuadro_emergente.title("Mensaje")
+        ancho_ventana = 400
+        alto_ventana = 100
         
         mensaje_label = tk.Label(cuadro_emergente, text="Correctamente registrado")
         mensaje_label.pack(padx=20, pady=20)
+
+        cuadro_emergente.geometry(f"{300}x{100}+{150}+{100}")
+
+        x_ventana = cuadro_emergente.winfo_screenwidth() // 2 - ancho_ventana // 2
+        y_ventana = cuadro_emergente.winfo_screenheight() // 2 - alto_ventana // 2
+
+        posicion = str(ancho_ventana) + "x" + str(alto_ventana) + "+" + str(x_ventana) + "+" + str(y_ventana)
+        cuadro_emergente.geometry(posicion)
+
+        cuadro_emergente.resizable(0,0)
 
     def reiniciar(self):
         self.placa_entry.configure(placeholder_text="Placa", state="normal")
@@ -351,6 +341,29 @@ class App(customtkinter.CTk):
                     self.home_frame_button.grid(row=j+1, column=i, padx=15, pady=5.5)
 
     def mostrarHistorial(self):
+
+        self.fourth_frame = ttk.Treeview(self, columns=("col1","col2","col3","col4", "col5","col6", "col7"))
+        # self.third_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color="transparent")
+        # self.third_frame.grid_columnconfigure(0, weight=1)
+        
+
+        self.fourth_frame.column("#0",width=60, anchor="center")
+        self.fourth_frame.column("col1",width=80, anchor="center")
+        self.fourth_frame.column("col2",width=40, anchor="center")
+        self.fourth_frame.column("col3",width=20, anchor="center")
+        self.fourth_frame.column("col4",width=100, anchor="center")
+        self.fourth_frame.column("col5",width=100, anchor="center")
+        self.fourth_frame.column("col6",width=40, anchor="center")
+        self.fourth_frame.column("col7",width=20, anchor="center")
+
+        self.fourth_frame.heading("#0", text="ID", anchor="center")
+        self.fourth_frame.heading("col1", text="Nombre", anchor="center")
+        self.fourth_frame.heading("col2", text="Placa", anchor="center")
+        self.fourth_frame.heading("col3", text="Ubicación", anchor="center")
+        self.fourth_frame.heading("col4", text="Ingreso", anchor="center")
+        self.fourth_frame.heading("col5", text="Salida", anchor="center")
+        self.fourth_frame.heading("col6", text="Horas", anchor="center")
+        self.fourth_frame.heading("col7", text="Monto", anchor="center")
         self.datos2 = Sistema.recopilarHistorial()
 
         self.fourth_frame.heading("#0", text="ID", anchor="center")
@@ -363,7 +376,7 @@ class App(customtkinter.CTk):
         self.fourth_frame.heading("col7", text="Monto", anchor="center")
 
         for element in self.datos2:
-            self.fourth_frame.insert("","end",text=element[0], values=(element[1],element[5], element[6], element[2], element[3], element[7], element[6]))
+            self.fourth_frame.insert("","end",text=element[0], values=(element[1],element[5], element[6], element[2], element[3], element[8], element[7]))
 
     def reporteDiario(self):
         Sistema.generarReporteDiario()
